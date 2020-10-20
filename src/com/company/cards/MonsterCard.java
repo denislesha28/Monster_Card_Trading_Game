@@ -1,5 +1,4 @@
 package com.company.cards;
-
 import javax.swing.*;
 
 public class MonsterCard implements Card{
@@ -17,7 +16,7 @@ public class MonsterCard implements Card{
         this.damage = damage;
     }
 
-    public Type getAttribute() {
+    public Type getAttribute(){
         return attribute;
     }
 
