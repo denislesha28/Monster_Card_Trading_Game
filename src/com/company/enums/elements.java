@@ -1,4 +1,7 @@
 package com.company.enums;
 
-public enum Elements {
+public enum elements {
+    FIRE,
+    WATER,
+    NORMAL
 }

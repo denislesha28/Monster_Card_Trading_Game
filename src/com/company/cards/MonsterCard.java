@@ -1,10 +1,8 @@
-package com.company;
-enum Type{
-    FIRE,
-    WATER,
-    NORMAL
-}
-public class MonsterCard {
+package com.company.cards;
+
+import javax.swing.*;
+
+public class MonsterCard implements Card{
     private int damage;
     private Type attribute;
     MonsterCard(int damage, Type attribute){
