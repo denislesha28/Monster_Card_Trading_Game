@@ -1,22 +1,8 @@
 package com.company.cards;
+import com.company.enums.elements;
 
-public class SpellCard implements Card {
-    private int damage;
-    private Type attribute;
-    public int getDamage() {
-        return damage;
+public class SpellCard extends Card {
+    public SpellCard(int damage, elements attribute) {
+        super(damage, attribute);
     }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    public Type getAttribute() {
-        return attribute;
-    }
-
-    public void setAttribute(Type attribute) {
-        this.attribute = attribute;
-    }
-
 }

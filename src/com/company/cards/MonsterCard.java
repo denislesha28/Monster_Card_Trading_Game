@@ -1,27 +1,9 @@
 package com.company.cards;
+import com.company.enums.elements;
 import javax.swing.*;
 
-public class MonsterCard implements Card{
-    private int damage;
-    private Type attribute;
-    MonsterCard(int damage, Type attribute){
-        this.damage=damage;
-        this.attribute=attribute;
+public class MonsterCard extends Card{
+    public MonsterCard(int damage, elements attribute) {
+        super(damage, attribute);
     }
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    public Type getAttribute(){
-        return attribute;
-    }
-
-    public void setAttribute(Type attribute) {
-        this.attribute = attribute;
-    }
-
 }

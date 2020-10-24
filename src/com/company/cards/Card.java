@@ -1,16 +1,30 @@
 package com.company.cards;
-//import com.company.enums.elements;
+import com.company.enums.elements;
 enum Type{
     FIRE,
     WATER,
     NORMAL
 }
-public interface Card {
-    int getDamage();
+public abstract class Card {
+    private int damage;
+    private elements attribute;
+    public  Card(int damage, elements attribute){
+        this.damage=damage;
+        this.attribute=attribute;
+    }
+    public int getDamage() {
+        return damage;
+    }
 
-    void setDamage(int damage);
+    public void setDamage(int damage) {
+        this.damage = damage;
+    }
 
-    Type getAttribute();
+    public elements getAttribute(){
+        return attribute;
+    }
 
-    void setAttribute(Type attribute);
+    public void setAttribute(elements attribute) {
+        this.attribute = attribute;
+    }
 }
