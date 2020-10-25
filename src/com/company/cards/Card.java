@@ -1,8 +1,12 @@
 package com.company.cards;
+
 import com.company.enums.elements;
+import com.company.enums.monsters;
+
 public abstract class Card {
-    private int damage;
-    private elements attribute;
+    protected monsters type;
+    protected int damage;
+    protected elements attribute;
     public  Card(int damage, elements attribute){
         this.damage=damage;
         this.attribute=attribute;
@@ -11,15 +15,13 @@ public abstract class Card {
         return damage;
     }
 
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
     public elements getAttribute(){
         return attribute;
     }
 
-    public void setAttribute(elements attribute) {
-        this.attribute = attribute;
+    public monsters getMonsterType(){
+        return type;
     }
+
+    public abstract boolean battleCard(Card enemyCard);
 }
