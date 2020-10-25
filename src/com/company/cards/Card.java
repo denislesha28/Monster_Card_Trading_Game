@@ -1,10 +1,5 @@
 package com.company.cards;
 import com.company.enums.elements;
-enum Type{
-    FIRE,
-    WATER,
-    NORMAL
-}
 public abstract class Card {
     private int damage;
     private elements attribute;
