@@ -1,10 +1,10 @@
-package com.company.tests;
+package com.Monster_Card_Game.tests;
 
-import com.company.cards.Card;
-import com.company.cards.MonsterCard;
-import com.company.cards.SpellCard;
-import com.company.enums.elements;
-import com.company.enums.monsters;
+import com.Monster_Card_Game.cards.Card;
+import com.Monster_Card_Game.cards.MonsterCard;
+import com.Monster_Card_Game.cards.SpellCard;
+import com.Monster_Card_Game.enums.elements;
+import com.Monster_Card_Game.enums.monsters;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

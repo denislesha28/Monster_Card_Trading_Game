@@ -1,7 +1,7 @@
-package com.company.cards;
+package com.Monster_Card_Game.cards;
 
-import com.company.enums.elements;
-import com.company.enums.monsters;
+import com.Monster_Card_Game.enums.elements;
+import com.Monster_Card_Game.enums.monsters;
 
 public abstract class Card {
     protected monsters type;

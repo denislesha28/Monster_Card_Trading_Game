@@ -1,6 +1,6 @@
-package com.company.cards;
-import com.company.enums.elements;
-import com.company.enums.monsters;
+package com.Monster_Card_Game.cards;
+import com.Monster_Card_Game.enums.elements;
+import com.Monster_Card_Game.enums.monsters;
 
 public class MonsterCard extends Card{
     public MonsterCard(int damage, elements attribute,monsters type) {

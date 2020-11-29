@@ -1,4 +1,4 @@
-package com.company.user;
+package com.Monster_Card_Game.user;
 
 public class User {
     private int vcoins;

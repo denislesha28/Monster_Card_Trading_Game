@@ -1,5 +1,5 @@
-package com.company.stack;
-import com.company.cards.Card;
+package com.Monster_Card_Game.stack;
+import com.Monster_Card_Game.cards.Card;
 
 import java.util.ArrayList;
 import java.util.List;
