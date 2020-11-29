@@ -18,7 +18,7 @@ public class Main {
             RequestContext handler = new RequestContext();
             Socket clientSocket = serverSocket.accept();
             if (clientSocket != null) {
-                //System.out.println("Connected");
+                System.out.println("Connected");
             }
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
