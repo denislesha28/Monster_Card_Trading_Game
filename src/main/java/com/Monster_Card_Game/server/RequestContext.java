@@ -106,42 +106,4 @@ public class RequestContext {
         payload=null; // empty payload
         return list.size();
     }
-
-    public String returnPayload(){
-        return payload.toString();
-    }
-
-
-    public String returnPayloadAt(int position,List<String> list) throws IOException {
-        return list.get(position);
-    }
-
-    public void updatePayloadAt(int position,List<String> list,BufferedReader in) throws IOException{
-        if(list.isEmpty()){
-            System.out.println("Messages are Empty!!");
-            return;
-        }
-        readPayload(in);
-        list.set(position,payload.toString());
-        payload=null;
-    }
-
-
-
-    public void deletePayloadAt(int position,List<String> list) throws IOException{
-        if(list.isEmpty()){
-            System.out.println("Messages are Empty!!");
-            return;
-        }
-        list.remove(position);
-    }
-
-    public void printMessages(List<String> list){
-        System.out.println(list);
-        System.out.println("\n");
-    }
-
-    public String generateResponse(String input){
-        return ServerResponse+input;
-    }
 }
