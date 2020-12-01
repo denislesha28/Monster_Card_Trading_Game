@@ -22,6 +22,9 @@ public class Main {
             }
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+            String header=handler.readHeader(in);
+            String payload=handler.readPayload(in);
+            System.out.println(header+"  "+payload+"  ");
         }catch (IOException e){
             System.out.println(e);
         }

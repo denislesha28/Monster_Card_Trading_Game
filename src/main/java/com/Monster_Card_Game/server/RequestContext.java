@@ -13,7 +13,7 @@ public class RequestContext {
             "Accept-Ranges: bytes\r\n"+
             "Content-Length:1\r\n\r\n";
 
-    public void readHeader(BufferedReader in) throws IOException {
+    public String readHeader(BufferedReader in) throws IOException {
         headerInfo = "";
         String line = in.readLine();
 
@@ -36,6 +36,7 @@ public class RequestContext {
             }
 //        headerInfo=headerInfo.replace("null","");
         }
+        return headerInfo;
     }
 
     public void setHTTPHeader(String input){
@@ -88,12 +89,13 @@ public class RequestContext {
         return request;
     }
 
-    public void readPayload(BufferedReader in)throws IOException{
+    public String readPayload(BufferedReader in)throws IOException{
         payload = new StringBuilder();
         while(in.ready()){
             payload.append((char) in.read());
         }
         // System.out.println("Payload data is: "+payload.toString());
+        return payload.toString();
     }
 
     public int savePayload(List<String> list,BufferedReader in) throws IOException {

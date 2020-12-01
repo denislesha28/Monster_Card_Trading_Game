@@ -5,5 +5,5 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class deck {
-    List<Card> deck=new ArrayList<>(4);
+    List<Card> deck=new ArrayList(4);
 }
