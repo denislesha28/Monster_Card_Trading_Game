@@ -1,0 +1,5 @@
+SWE CHOICES :
+
+ENUM MONSTERS AND ELEMENTS BESSERES PERFORMANCE 
+Multthreading WIP 
+battle Elements Method Detals : 1 -> Effective, 2 - > not Effective, 0 -> no effect  

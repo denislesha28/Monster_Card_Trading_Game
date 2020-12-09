@@ -9,7 +9,28 @@ public class SpellCard extends Card {
 
     @Override
     public boolean battleCard(Card enemyCard) {
-        return true;
+        int temp_dmg=damage;
+        int enemy_dmg=enemyCard.getDamage();
+        if(enemyCard.getMonsterType()==monsters.Kraken){
+            return false;
+        }
+        if(this.attribute==elements.Water && enemyCard.getMonsterType()==monsters.Knight){
+            return true;
+        }
+        if (battleElements(enemyCard) == 1) {
+            temp_dmg *= 2;
+            enemy_dmg /= 2;
+        } else if (battleElements(enemyCard) == 2) {
+            temp_dmg /= 2;
+            enemy_dmg *= 2;
+        }
+        if (temp_dmg > enemy_dmg) {
+            return true;
+        } else {
+            return false;
+        }
     }
+
+
 
 }
