@@ -6,6 +6,7 @@ import com.Monster_Card_Game.cards.SpellCard;
 import com.Monster_Card_Game.enums.elements;
 import com.Monster_Card_Game.enums.monsters;
 import com.Monster_Card_Game.server.DatabaseHandler;
+import com.Monster_Card_Game.server.JsonSerializer;
 import com.Monster_Card_Game.server.RequestContext;
 
 import java.io.BufferedReader;
@@ -24,6 +25,7 @@ public class Main {
             ServerSocket serverSocket = new ServerSocket(portNumber);
             RequestContext handler = new RequestContext();
             DatabaseHandler dbHandler=new DatabaseHandler();
+            JsonSerializer jsonSerializer=new JsonSerializer();
             Socket clientSocket = serverSocket.accept();
             if (clientSocket != null) {
                 //System.out.println("Connected");
@@ -34,14 +36,9 @@ public class Main {
             String payload=handler.readPayload(in);
             String request=handler.readRequest();
             System.out.println(header+"  "+payload+"  "+"  "+request);
-            Card kraken=new MonsterCard(100, elements.Water, monsters.Kraken);
-            Card spell=new SpellCard(100,elements.Fire);
-            if(kraken.battleCard(spell)){
-                System.out.println("Kraken won!!");
-            }
-            else {
-                System.out.println("WTF!!");
-            }
+            Card testCard=jsonSerializer.convertStringToObject(payload);
+            System.out.println(testCard);
+            System.out.println(testCard.getName()+"  "+testCard.getMonsterType()+"  "+testCard.getAttribute());
         }catch (IOException | SQLException e){
             System.out.println(e);
         }

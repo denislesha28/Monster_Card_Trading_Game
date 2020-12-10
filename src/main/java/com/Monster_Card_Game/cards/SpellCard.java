@@ -1,10 +1,13 @@
 package com.Monster_Card_Game.cards;
 import com.Monster_Card_Game.enums.elements;
 import com.Monster_Card_Game.enums.monsters;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SpellCard extends Card {
-    public SpellCard(int damage, elements attribute) {
-        super(damage, attribute);
-        type=monsters.NONE;
+    @JsonCreator
+    public SpellCard(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage) {
+        super(name,damage);
     }
 
     @Override

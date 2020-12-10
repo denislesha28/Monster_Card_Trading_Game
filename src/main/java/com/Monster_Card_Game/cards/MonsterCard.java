@@ -1,11 +1,34 @@
 package com.Monster_Card_Game.cards;
 import com.Monster_Card_Game.enums.elements;
 import com.Monster_Card_Game.enums.monsters;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MonsterCard extends Card{
-    public MonsterCard(int damage, elements attribute,monsters type) {
-        super(damage, attribute);
-        this.type=type;
+    @JsonCreator
+    public MonsterCard(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage) {
+        super(name,damage);
+        if(name.contains("Dragon")){
+            type=monsters.Dragon;
+        }
+        else if(name.contains("Kraken")){
+            type=monsters.Kraken;
+        }
+        else if(name.contains("Goblin")){
+            type=monsters.Goblin;
+        }
+        else if(name.contains("Wizard")){
+            type=monsters.Wizard;
+        }
+        else if(name.contains("Ork")){
+            type=monsters.Ork;
+        }
+        else if(name.contains("Knight")){
+            type=monsters.Knight;
+        }
+        else if(name.contains("FireElve")){
+            type=monsters.FireElve;
+        }
     }
 
     private int battleMonsterTypes(Card enemyCard){
