@@ -23,7 +23,7 @@ public abstract class Card {
         return type;
     }
 
-    public int battleElements(Card enemyCard){
+    protected int battleElements(Card enemyCard){
         //General Declaration - > 1 - Effective , 2 - > not effective , 0 - > no effect
         if(this.getAttribute()==elements.Fire && enemyCard.getAttribute()==elements.Normal){
            return 1;

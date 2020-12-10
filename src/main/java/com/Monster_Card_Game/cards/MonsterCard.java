@@ -8,7 +8,7 @@ public class MonsterCard extends Card{
         this.type=type;
     }
 
-    public int battleMonsterTypes(Card enemyCard){
+    private int battleMonsterTypes(Card enemyCard){
         if(this.type==monsters.Goblin && enemyCard.getMonsterType()==monsters.Dragon){
             return 2;
         }
