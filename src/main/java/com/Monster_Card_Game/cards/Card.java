@@ -12,7 +12,7 @@ public abstract class Card {
     protected String name;
     protected String cardID;
     @JsonCreator
-    public Card(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage){
+    public Card(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage,@JsonProperty("Id")String cardID){
         this.name=name;
         this.damage=damage;
         if(name.contains("Water")){
@@ -24,7 +24,7 @@ public abstract class Card {
         else{
             attribute=elements.Normal;
         }
-        cardID="empty";
+        this.cardID=cardID;
         type=monsters.NONE;
     }
     public int getDamage() {

@@ -13,7 +13,7 @@ public class CardTest {
     @Test
     public void testCardType(){
         //Arrange
-        Card testCard=new SpellCard("FireSpell", 100);
+        Card testCard=new SpellCard("FireSpell", 100,"empty");
         //Act
         elements actual=testCard.getAttribute();
         //Assert
@@ -23,7 +23,7 @@ public class CardTest {
     @Test
     public void testCardDamage(){
         //Arrange
-        Card testCard=new SpellCard("RandomSpell",100);
+        Card testCard=new SpellCard("RandomSpell",100,"empty");
         //Act
         int actual=testCard.getDamage();
         //Assert
@@ -33,7 +33,7 @@ public class CardTest {
     @Test
     public void testMonsterType(){
         //Arrange
-        MonsterCard testCard=new MonsterCard("FireElve",100);
+        MonsterCard testCard=new MonsterCard("FireElve",100,"empty");
         //Act
         monsters actual=testCard.getMonsterType();
         //Assert

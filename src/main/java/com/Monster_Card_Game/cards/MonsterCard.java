@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MonsterCard extends Card{
     @JsonCreator
-    public MonsterCard(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage) {
-        super(name,damage);
+    public MonsterCard(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage,@JsonProperty("Id")String cardID) {
+        super(name,damage,cardID);
         if(name.contains("Dragon")){
             type=monsters.Dragon;
         }

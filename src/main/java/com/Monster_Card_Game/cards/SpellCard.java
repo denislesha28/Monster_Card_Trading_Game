@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class SpellCard extends Card {
     @JsonCreator
-    public SpellCard(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage) {
-        super(name,damage);
+    public SpellCard(@JsonProperty("Name")String name,@JsonProperty("Damage")int damage,@JsonProperty("Id")String cardID) {
+        super(name,damage,cardID);
     }
 
     @Override
