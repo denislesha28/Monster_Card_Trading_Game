@@ -9,7 +9,7 @@ import java.security.spec.InvalidKeySpecException;
 
 public class PasswordHasher {
     
-    public String generateStorngPasswordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
+    public String generateStrongPasswordHash(String password) throws NoSuchAlgorithmException, InvalidKeySpecException
     {
         int iterations = 1000;
         char[] chars = password.toCharArray();
@@ -39,6 +39,7 @@ public class PasswordHasher {
         }
         return diff == 0;
     }
+
     private static byte[] fromHex(String hex) throws NoSuchAlgorithmException
     {
         byte[] bytes = new byte[hex.length() / 2];

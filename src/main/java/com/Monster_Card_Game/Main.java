@@ -15,6 +15,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.sql.SQLException;
 
 public class Main {
@@ -42,8 +44,10 @@ public class Main {
             System.out.println(testCard.getName()+"  "+testCard.getMonsterType()+"  "+testCard.getAttribute());
              */
             dbHandler.createUser("Denis","password");
+            System.out.println(dbHandler.validateUser("Denis","password"));
+            //System.out.println(dbHandler.);
 
-        }catch (IOException | SQLException e){
+        }catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e){
             System.out.println(e);
         }
     }

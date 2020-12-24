@@ -3,10 +3,7 @@ package com.Monster_Card_Game.server;
 import java.net.ConnectException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class DatabaseHandler {
     String jdbcURL;
@@ -14,7 +11,7 @@ public class DatabaseHandler {
     String password;
     Connection connection;
     PasswordHasher pwHasher=new PasswordHasher();
-
+    Statement stmt;
     public DatabaseHandler() throws SQLException {
         jdbcURL="jdbc:postgresql://localhost:5432/MonsterCardGame";
         username="postgres";
@@ -23,11 +20,23 @@ public class DatabaseHandler {
         System.out.println("Database Connected");
     }
     public void createUser(String username,String password) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
-        password=pwHasher.generateStorngPasswordHash(password);
+        password=pwHasher.generateStrongPasswordHash(password);
         String insertStatement="INSERT INTO \"MonsterCardGame\".\"user\" (\"username\",\"password\") " +
                 "VALUES (\'"+username+"\',\'"+password+"\')";
         System.out.println(insertStatement);
-        Statement stmt=connection.createStatement();
+        stmt=connection.createStatement();
         stmt.executeUpdate(insertStatement);
+    }
+    public boolean validateUser(String username,String password) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
+        String db_pass="";
+        String insertStatement="Select \"password\" from \"MonsterCardGame\".\"user\" "
+        +"where \"username\"=?";
+        PreparedStatement preparedStatement=connection.prepareStatement(insertStatement);
+        preparedStatement.setString(1,username);
+        ResultSet resultSet=preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            db_pass=resultSet.getString("password");
+        }
+        return pwHasher.validatePassword(password,db_pass);
     }
 }
