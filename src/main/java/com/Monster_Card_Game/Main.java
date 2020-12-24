@@ -36,9 +36,13 @@ public class Main {
             String payload=handler.readPayload(in);
             String request=handler.readRequest();
             System.out.println(header+"  "+payload+"  "+"  "+request);
+            /*
             Card testCard=jsonSerializer.convertStringToObject(payload);
             System.out.println(testCard);
             System.out.println(testCard.getName()+"  "+testCard.getMonsterType()+"  "+testCard.getAttribute());
+             */
+            dbHandler.createUser("Denis","password");
+
         }catch (IOException | SQLException e){
             System.out.println(e);
         }
