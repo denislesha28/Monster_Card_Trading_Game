@@ -23,4 +23,15 @@ public class TokenGenerator {
         String token="Basic "+input+"-mtcgToken";
         tokens.remove(token);
     }
+
+    public String returnUserFromToken(String input){
+        int starting_pos=input.indexOf("Authorization");
+        String user="";
+        int i=starting_pos+21;
+        while (input.charAt(i)!='-'){
+            user+=input.charAt(i);
+            i++;
+        }
+        return user;
+    }
 }

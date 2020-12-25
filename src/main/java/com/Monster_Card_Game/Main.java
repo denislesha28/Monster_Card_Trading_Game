@@ -59,6 +59,7 @@ public class Main {
                     System.out.println(dbHandler.validateUser(user.getUsername(), user.getPassword()));
                     user = null;
                 }
+                System.out.println(tokenGenerator.returnUserFromToken(header));
             }
 
         }catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e){
