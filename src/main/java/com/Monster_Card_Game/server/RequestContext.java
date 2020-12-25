@@ -79,10 +79,10 @@ public class RequestContext {
         for (int i=0;i<headerInfo.length();i++){
             if(headerInfo.charAt(i)=='/'){
                 for (int j=i+1;j<headerInfo.length();j++){
-                    request+=headerInfo.charAt(j);
                     if(headerInfo.charAt(j)==' '){
                         return request;
                     }
+                    request+=headerInfo.charAt(j);
                 }
             }
         }

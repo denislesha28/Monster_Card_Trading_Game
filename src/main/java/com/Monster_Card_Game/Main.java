@@ -8,6 +8,7 @@ import com.Monster_Card_Game.enums.monsters;
 import com.Monster_Card_Game.server.DatabaseHandler;
 import com.Monster_Card_Game.server.JsonSerializer;
 import com.Monster_Card_Game.server.RequestContext;
+import com.Monster_Card_Game.user.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,8 +44,16 @@ public class Main {
             System.out.println(testCard);
             System.out.println(testCard.getName()+"  "+testCard.getMonsterType()+"  "+testCard.getAttribute());
              */
-            dbHandler.createUser("Denis","password");
-            System.out.println(dbHandler.validateUser("Denis","password"));
+            if(request.compareTo("users")==0){
+                User user=jsonSerializer.convertUserToObject(payload);
+                dbHandler.createUser(user.getUsername(),user.getPassword());
+                user=null;
+            }
+            else if(request.compareTo("sessions")==0){
+                User user=jsonSerializer.convertUserToObject(payload);
+                System.out.println(dbHandler.validateUser(user.getUsername(),user.getPassword()));
+                user=null;
+            }
             //System.out.println(dbHandler.);
 
         }catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e){
