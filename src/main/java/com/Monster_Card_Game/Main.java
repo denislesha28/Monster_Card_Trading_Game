@@ -8,6 +8,7 @@ import com.Monster_Card_Game.enums.monsters;
 import com.Monster_Card_Game.server.DatabaseHandler;
 import com.Monster_Card_Game.server.JsonSerializer;
 import com.Monster_Card_Game.server.RequestContext;
+import com.Monster_Card_Game.server.TokenGenerator;
 import com.Monster_Card_Game.user.User;
 
 import java.io.BufferedReader;
@@ -29,32 +30,36 @@ public class Main {
             RequestContext handler = new RequestContext();
             DatabaseHandler dbHandler=new DatabaseHandler();
             JsonSerializer jsonSerializer=new JsonSerializer();
-            Socket clientSocket = serverSocket.accept();
-            if (clientSocket != null) {
-                //System.out.println("Connected");
+            TokenGenerator tokenGenerator=new TokenGenerator();
+            while (true) {
+                Socket clientSocket = serverSocket.accept();
+                if (clientSocket != null) {
+                    //System.out.println("Connected");
+                }
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                String header = handler.readHeader(in);
+                String payload = handler.readPayload(in);
+                String request = handler.readRequest();
+                System.out.println(header + "  " + payload + "  " + "  " + request);
+                /*
+                Card testCard=jsonSerializer.convertStringToObject(payload);
+                System.out.println(testCard);
+                System.out.println(testCard.getName()+"  "+testCard.getMonsterType()+"  "+testCard.getAttribute());
+                 */
+                if (request.compareTo("users") == 0) {
+                    User user = jsonSerializer.convertUserToObject(payload);
+                    dbHandler.createUser(user.getUsername(), user.getPassword());
+                    user = null;
+                } else if (request.compareTo("sessions") == 0) {
+                    User user = jsonSerializer.convertUserToObject(payload);
+                    if (dbHandler.validateUser(user.getUsername(), user.getPassword())) {
+                        tokenGenerator.generateToken(user.getUsername());
+                    }
+                    System.out.println(dbHandler.validateUser(user.getUsername(), user.getPassword()));
+                    user = null;
+                }
             }
-            PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-            BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            String header=handler.readHeader(in);
-            String payload=handler.readPayload(in);
-            String request=handler.readRequest();
-            System.out.println(header+"  "+payload+"  "+"  "+request);
-            /*
-            Card testCard=jsonSerializer.convertStringToObject(payload);
-            System.out.println(testCard);
-            System.out.println(testCard.getName()+"  "+testCard.getMonsterType()+"  "+testCard.getAttribute());
-             */
-            if(request.compareTo("users")==0){
-                User user=jsonSerializer.convertUserToObject(payload);
-                dbHandler.createUser(user.getUsername(),user.getPassword());
-                user=null;
-            }
-            else if(request.compareTo("sessions")==0){
-                User user=jsonSerializer.convertUserToObject(payload);
-                System.out.println(dbHandler.validateUser(user.getUsername(),user.getPassword()));
-                user=null;
-            }
-            //System.out.println(dbHandler.);
 
         }catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e){
             System.out.println(e);
