@@ -9,7 +9,7 @@ public class DatabaseHandler {
     String jdbcURL;
     String username;
     String password;
-    Connection connection;
+    public Connection connection;
     PasswordHasher pwHasher=new PasswordHasher();
     Statement stmt;
     public DatabaseHandler() throws SQLException {
