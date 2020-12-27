@@ -43,6 +43,8 @@ public abstract class Card {
 
     public void setName(String name) { this.name = name; }
 
+    public String getCardID() { return cardID; }
+
     protected int battleElements(Card enemyCard){
         //General Declaration - > 1 - Effective , 2 - > not effective , 0 - > no effect
         if(this.getAttribute()==elements.Fire && enemyCard.getAttribute()==elements.Normal){

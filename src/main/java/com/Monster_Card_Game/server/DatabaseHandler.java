@@ -29,9 +29,9 @@ public class DatabaseHandler {
     }
     public boolean validateUser(String username,String password) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
         String db_pass="";
-        String insertStatement="Select \"password\" from \"MonsterCardGame\".\"user\" "
+        String selectStatement="Select \"password\" from \"MonsterCardGame\".\"user\" "
         +"where \"username\"=?";
-        PreparedStatement preparedStatement=connection.prepareStatement(insertStatement);
+        PreparedStatement preparedStatement=connection.prepareStatement(selectStatement);
         preparedStatement.setString(1,username);
         ResultSet resultSet=preparedStatement.executeQuery();
         while (resultSet.next()) {
