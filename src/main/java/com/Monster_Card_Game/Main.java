@@ -11,6 +11,7 @@ import com.Monster_Card_Game.server.RequestContext;
 import com.Monster_Card_Game.server.TokenGenerator;
 import com.Monster_Card_Game.stack.PackageHandler;
 import com.Monster_Card_Game.user.User;
+import com.Monster_Card_Game.user.UserManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class Main {
             DatabaseHandler dbHandler=new DatabaseHandler();
             JsonSerializer jsonSerializer=new JsonSerializer();
             TokenGenerator tokenGenerator=new TokenGenerator();
+            UserManager userManager=new UserManager();
             while (true) {
                 Socket clientSocket = serverSocket.accept();
                 if (clientSocket != null) {
@@ -53,11 +55,12 @@ public class Main {
                     dbHandler.createUser(user.getUsername(), user.getPassword());
                 }
                 else if (request.compareTo("sessions") == 0) {
-                    User user = jsonSerializer.convertUserToObject(payload);
-                    if (dbHandler.validateUser(user.getUsername(), user.getPassword())) {
-                        tokenGenerator.generateToken(user.getUsername());
+                    int position=userManager.addUser(jsonSerializer.convertUserToObject(payload));
+                    if (dbHandler.validateUser(userManager.at(position).getUsername(), userManager.at(position).getPassword())) {
+                        tokenGenerator.generateToken(userManager.at(position).getUsername());
                     }
-                    System.out.println(dbHandler.validateUser(user.getUsername(), user.getPassword()));
+                    System.out.println(dbHandler.validateUser(userManager.at(position).getUsername(),
+                            userManager.at(position).getPassword()));
                 }
                 else if (request.compareTo("packages")==0){
                     boolean check=tokenGenerator.authenticate("admin");
@@ -69,7 +72,8 @@ public class Main {
                     packageHandler.generatePackage(payload);
                 }
                 else if(request.compareTo("transactions/packages")==0){
-
+                    String username=tokenGenerator.returnUserFromToken(header);
+                    userManager.at(username).acquirePackage();
                 }
             }
 

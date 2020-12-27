@@ -24,6 +24,13 @@ public class User {
         dbHandler=new DatabaseHandler();
         userID=-1; // userID is non existent
     }
+
+    User(String username) throws SQLException {
+        this.username=username;
+        vcoins=20;
+        dbHandler=new DatabaseHandler();
+        userID=-1;
+    }
     public int getVcoins() {
         return vcoins;
     }
@@ -47,6 +54,8 @@ public class User {
     public String getPassword(){
         return password;
     }
+
+    public void resetPassword(){ password=""; }
 
     public void acquirePackage() throws SQLException {
         if(userID==-1) {
