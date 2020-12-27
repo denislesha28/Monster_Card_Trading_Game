@@ -51,14 +51,13 @@ public class Main {
                 if (request.compareTo("users") == 0) {
                     User user = jsonSerializer.convertUserToObject(payload);
                     dbHandler.createUser(user.getUsername(), user.getPassword());
-                    user = null;
-                } else if (request.compareTo("sessions") == 0) {
+                }
+                else if (request.compareTo("sessions") == 0) {
                     User user = jsonSerializer.convertUserToObject(payload);
                     if (dbHandler.validateUser(user.getUsername(), user.getPassword())) {
                         tokenGenerator.generateToken(user.getUsername());
                     }
                     System.out.println(dbHandler.validateUser(user.getUsername(), user.getPassword()));
-                    user = null;
                 }
                 else if (request.compareTo("packages")==0){
                     boolean check=tokenGenerator.authenticate("admin");
@@ -68,6 +67,9 @@ public class Main {
                     }*/
                     PackageHandler packageHandler=new PackageHandler();
                     packageHandler.generatePackage(payload);
+                }
+                else if(request.compareTo("transactions/packages")==0){
+
                 }
             }
 

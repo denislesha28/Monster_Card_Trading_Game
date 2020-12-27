@@ -23,7 +23,7 @@ public class PackageHandler {
         cards[0]=cards[0].replace("[","");
         cards[cards.length-1]=cards[cards.length-1].replace("]","");
         for (int i=0;i<cards.length;i++){
-            System.out.println(cards[i]);
+            //System.out.println(cards[i]);
             cardPackage[i]=jsonSerializer.convertCardToObject(cards[i]);
         }
         uploadPackage(cardPackage);
