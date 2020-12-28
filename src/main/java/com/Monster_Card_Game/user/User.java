@@ -75,4 +75,32 @@ public class User {
         stmt.executeUpdate(sqlAcquire);
     }
 
+    public void showAcquiredCards() throws SQLException {
+        if(userID==-1) {
+            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
+                    "WHERE \"username\" = ?";
+            PreparedStatement preparedStatement = dbHandler.connection.prepareStatement(getUserID);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                userID=resultSet.getInt("userid");
+            }
+        }
+        String selectCards="select * " +
+                "from \"MonsterCardGame\".\"card\" as c" +
+                " join \"MonsterCardGame\".\"package\" as p" +
+                " on c.\"packageid\"=p.\"packageid\"" +
+                " where p.\"userid\"="+userID;
+        Statement stmt=dbHandler.connection.createStatement();
+        System.out.println(selectCards);
+        ResultSet resultSet=stmt.executeQuery(selectCards);
+        int i=0;
+        while (resultSet.next()){
+            i++;
+            System.out.println("Card "+resultSet.getString("cardserialid")+": "
+                    +resultSet.getString("cardname")+" "+resultSet.getString("carddamage")+
+                    " "+resultSet.getString("cardattribute")+" "+resultSet.getString("cardmonster"));
+        }
+    }
+
 }

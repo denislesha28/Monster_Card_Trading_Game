@@ -44,7 +44,7 @@ public class Main {
                 String header = handler.readHeader(in);
                 String payload = handler.readPayload(in);
                 String request = handler.readRequest();
-                System.out.println(payload + "  " + "  " + request);
+                System.out.println(payload +"\n"+ request);
                 /*
                 Card testCard=jsonSerializer.convertStringToObject(payload);
                 System.out.println(testCard);
@@ -74,6 +74,12 @@ public class Main {
                 else if(request.compareTo("transactions/packages")==0){
                     String username=tokenGenerator.returnUserFromToken(header);
                     userManager.at(username).acquirePackage();
+                    System.out.println(username+" acquired a package");
+                }
+                else if(request.compareTo("cards")==0){
+                    String username=tokenGenerator.returnUserFromToken(header);
+                    System.out.println("User: "+username+" cards:");
+                    userManager.at(username).showAcquiredCards();
                 }
             }
 
