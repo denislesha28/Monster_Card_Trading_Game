@@ -92,10 +92,18 @@ public class Main {
                     out.flush();
                 }
                 else if(request.compareTo("deck")==0){
-                    String username=tokenGenerator.returnUserFromToken(header);
-                    userManager.at(username).createDeck(payload);
-                    out.println(handler.ServerResponse);
-                    out.flush();
+                    if(handler.readHTTPVerb().compareTo("GET")==0){
+                        String username=tokenGenerator.returnUserFromToken(header);
+                        userManager.at(username).printDeck();
+                        out.println(handler.ServerResponse);
+                        out.flush();
+                    }
+                    else {
+                        String username = tokenGenerator.returnUserFromToken(header);
+                        userManager.at(username).createDeck(payload);
+                        out.println(handler.ServerResponse);
+                        out.flush();
+                    }
                 }
             }
 

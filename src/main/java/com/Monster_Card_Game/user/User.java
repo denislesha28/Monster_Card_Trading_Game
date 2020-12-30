@@ -110,4 +110,11 @@ public class User {
         deck.createCards(payload);
     }
 
+    public void printDeck(){
+        if (deck==null){
+            System.out.println("Empty Deck!!!");
+        }
+        deck.printDeck();
+    }
+
 }

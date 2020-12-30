@@ -33,7 +33,7 @@ public class Deck {
             ResultSet resultSet=preparedStatement.executeQuery();
             while (resultSet.next()){
                 int cardDmg=resultSet.getInt("carddamage");
-                String cardName=resultSet.getString("carddamage");
+                String cardName=resultSet.getString("cardname");
                 String monsterType=resultSet.getString("cardmonster");
                 String cardSerialID=resultSet.getString("cardserialid");
                 if(monsterType.compareTo("NONE")==0){
@@ -49,7 +49,10 @@ public class Deck {
     }
 
     public void printDeck(){
-
+        for (int i=0;i<deck.size();i++){
+            System.out.println("Card number "+i+" Name: "+deck.get(i).getName()+" Damage: "+deck.get(i).getDamage()
+            +" Attribute: "+deck.get(i).getAttribute()+" MonsterType: "+deck.get(i).getMonsterType());
+        }
     }
 
 }
