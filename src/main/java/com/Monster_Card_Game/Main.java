@@ -53,6 +53,8 @@ public class Main {
                 if (request.compareTo("users") == 0) {
                     User user = jsonSerializer.convertUserToObject(payload);
                     dbHandler.createUser(user.getUsername(), user.getPassword());
+                    out.println(handler.ServerResponse);
+                    out.flush();
                 }
                 else if (request.compareTo("sessions") == 0) {
                     int position=userManager.addUser(jsonSerializer.convertUserToObject(payload));
@@ -61,6 +63,8 @@ public class Main {
                     }
                     System.out.println(dbHandler.validateUser(userManager.at(position).getUsername(),
                             userManager.at(position).getPassword()));
+                    out.println(handler.ServerResponse);
+                    out.flush();
                 }
                 else if (request.compareTo("packages")==0){
                     boolean check=tokenGenerator.authenticate("admin");
@@ -70,16 +74,28 @@ public class Main {
                     }*/
                     PackageHandler packageHandler=new PackageHandler();
                     packageHandler.generatePackage(payload);
+                    out.println(handler.ServerResponse);
+                    out.flush();
                 }
                 else if(request.compareTo("transactions/packages")==0){
                     String username=tokenGenerator.returnUserFromToken(header);
                     userManager.at(username).acquirePackage();
                     System.out.println(username+" acquired a package");
+                    out.println(handler.ServerResponse);
+                    out.flush();
                 }
                 else if(request.compareTo("cards")==0){
                     String username=tokenGenerator.returnUserFromToken(header);
                     System.out.println("User: "+username+" cards:");
                     userManager.at(username).showAcquiredCards();
+                    out.println(handler.ServerResponse);
+                    out.flush();
+                }
+                else if(request.compareTo("deck")==0){
+                    String username=tokenGenerator.returnUserFromToken(header);
+                    userManager.at(username).createDeck(payload);
+                    out.println(handler.ServerResponse);
+                    out.flush();
                 }
             }
 

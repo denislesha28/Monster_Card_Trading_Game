@@ -7,7 +7,7 @@ import java.util.List;
 public class RequestContext {
     private StringBuilder payload;
     private String headerInfo;
-    private String ServerResponse="HTTP/1.1 200 OK.\r\n"+
+    public String ServerResponse="HTTP/1.1 200 OK.\r\n"+
             "Server: Denis\r\n"+
             "Content-Type: text/html\r\n"+
             "Accept-Ranges: bytes\r\n"+
@@ -106,4 +106,5 @@ public class RequestContext {
         payload=null; // empty payload
         return list.size();
     }
+
 }

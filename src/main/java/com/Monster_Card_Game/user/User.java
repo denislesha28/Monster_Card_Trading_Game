@@ -1,6 +1,7 @@
 package com.Monster_Card_Game.user;
 
 import com.Monster_Card_Game.server.DatabaseHandler;
+import com.Monster_Card_Game.stack.Deck;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,6 +16,7 @@ public class User {
     private String password;
     private int userID;
     DatabaseHandler dbHandler;
+    private Deck deck;
 
     @JsonCreator
     User(@JsonProperty("Username")String username,@JsonProperty("Password")String password) throws SQLException {
@@ -101,6 +103,11 @@ public class User {
                     +resultSet.getString("cardname")+" "+resultSet.getString("carddamage")+
                     " "+resultSet.getString("cardattribute")+" "+resultSet.getString("cardmonster"));
         }
+    }
+
+    public void createDeck(String payload){
+        deck=new Deck();
+        deck.createCards(payload);
     }
 
 }
