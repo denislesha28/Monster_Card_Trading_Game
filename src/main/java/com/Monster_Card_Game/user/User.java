@@ -105,7 +105,7 @@ public class User {
         }
     }
 
-    public void createDeck(String payload){
+    public void createDeck(String payload) throws SQLException {
         deck=new Deck();
         deck.createCards(payload);
     }
