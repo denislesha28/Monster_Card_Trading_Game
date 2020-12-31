@@ -4,6 +4,7 @@ import com.Monster_Card_Game.server.DatabaseHandler;
 import com.Monster_Card_Game.stack.Deck;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.mockito.internal.matchers.Null;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,22 +16,19 @@ public class User {
     private String username;
     private String password;
     private int userID;
-    DatabaseHandler dbHandler;
     private Deck deck;
 
     @JsonCreator
-    User(@JsonProperty("Username")String username,@JsonProperty("Password")String password) throws SQLException {
+    User(@JsonProperty("Username")String username,@JsonProperty("Password")String password)  {
         this.username=username;
         this.password=password;
         vcoins=20;
-        dbHandler=new DatabaseHandler();
         userID=-1; // userID is non existent
     }
 
     User(String username) throws SQLException {
         this.username=username;
         vcoins=20;
-        dbHandler=new DatabaseHandler();
         userID=-1;
     }
     public int getVcoins() {
@@ -59,7 +57,7 @@ public class User {
 
     public void resetPassword(){ password=""; }
 
-    public void acquirePackage() throws SQLException {
+    public boolean acquirePackage(DatabaseHandler dbHandler) throws SQLException {
         if(userID==-1) {
             String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
                     "WHERE \"username\" = ?";
@@ -72,12 +70,17 @@ public class User {
         }
         String sqlAcquire="UPDATE \"MonsterCardGame\".\"package\" SET \"userid\" = "+userID+" WHERE \"packageid\" = " +
                 "(SELECT \"packageid\" from \"MonsterCardGame\".\"package\"" +
-                "WHERE \"userid\" IS NULL LIMIT 1);";
+                "WHERE \"userid\" IS NULL LIMIT 1) RETURNING (SELECT \"packageid\" from \"MonsterCardGame\".\"package\" " +
+                "                WHERE \"userid\" IS NULL LIMIT 1);";
         Statement stmt=dbHandler.connection.createStatement();
-        stmt.executeUpdate(sqlAcquire);
+        ResultSet resultSet=stmt.executeQuery(sqlAcquire);
+        if (!resultSet.next()){
+            return false;
+        }
+        return true;
     }
 
-    public void showAcquiredCards() throws SQLException {
+    public void showAcquiredCards(DatabaseHandler dbHandler) throws SQLException {
         if(userID==-1) {
             String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
                     "WHERE \"username\" = ?";
@@ -105,14 +108,15 @@ public class User {
         }
     }
 
-    public void createDeck(String payload) throws SQLException {
+    public void createDeck(String payload,DatabaseHandler dbHandler) throws SQLException {
         deck=new Deck();
-        deck.createCards(payload);
+        deck.createCards(payload,dbHandler);
     }
 
     public void printDeck(){
         if (deck==null){
             System.out.println("Empty Deck!!!");
+            return;
         }
         deck.printDeck();
     }

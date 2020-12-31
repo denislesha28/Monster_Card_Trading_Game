@@ -14,11 +14,8 @@ import java.util.Arrays;
 public class PackageHandler {
     Card[] cardPackage=new Card[5];
     JsonSerializer jsonSerializer=new JsonSerializer();
-    DatabaseHandler dbHandler=new DatabaseHandler();
 
-    public PackageHandler() throws SQLException {}
-
-    public void generatePackage(String payload) throws JsonProcessingException, SQLException {
+    public void generatePackage(String payload,DatabaseHandler dbHandler) throws JsonProcessingException, SQLException {
         String cards[]=payload.split("(?<=\\}), (?=\\{)");
         cards[0]=cards[0].replace("[","");
         cards[cards.length-1]=cards[cards.length-1].replace("]","");
@@ -26,10 +23,10 @@ public class PackageHandler {
             //System.out.println(cards[i]);
             cardPackage[i]=jsonSerializer.convertCardToObject(cards[i]);
         }
-        uploadPackage(cardPackage);
+        uploadPackage(cardPackage,dbHandler);
     }
 
-    private void uploadPackage(Card[] cardPackage) throws SQLException {
+    private void uploadPackage(Card[] cardPackage,DatabaseHandler dbHandler) throws SQLException {
         int packageID = 0;
         String insertPackage="INSERT INTO \"MonsterCardGame\".\"package\"( \"packagename\", \"packagecost\")" +
                 " VALUES ('package',5) RETURNING \"packageid\"";

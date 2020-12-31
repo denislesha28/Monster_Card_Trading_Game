@@ -4,6 +4,7 @@ import com.Monster_Card_Game.cards.MonsterCard;
 import com.Monster_Card_Game.cards.SpellCard;
 import com.Monster_Card_Game.server.DatabaseHandler;
 
+import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,8 +13,11 @@ import java.util.List;
 
 public class Deck {
     List<Card> deck=new ArrayList(4);
-    public void createCards(String payload) throws SQLException {
-        DatabaseHandler dbHandler=new DatabaseHandler();
+    public void createCards(String payload,DatabaseHandler dbHandler) throws SQLException {
+        if (deck.size()==4){
+            System.out.println("Deck already full!");
+            return;
+        }
         String regex="(?<=\"), (?=\")";
         String cards[]=payload.split(regex);
         if (cards.length<4){
