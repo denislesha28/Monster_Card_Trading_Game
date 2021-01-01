@@ -6,10 +6,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.mockito.internal.matchers.Null;
 
+import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class User {
     private int vcoins;
@@ -17,18 +19,17 @@ public class User {
     private String password;
     private int userID;
     private Deck deck;
+    private ReentrantLock mutex=new ReentrantLock();
 
     @JsonCreator
     User(@JsonProperty("Username")String username,@JsonProperty("Password")String password)  {
         this.username=username;
         this.password=password;
-        vcoins=20;
         userID=-1; // userID is non existent
     }
 
     User(String username) throws SQLException {
         this.username=username;
-        vcoins=20;
         userID=-1;
     }
     public int getVcoins() {
@@ -58,6 +59,7 @@ public class User {
     public void resetPassword(){ password=""; }
 
     public boolean acquirePackage(DatabaseHandler dbHandler) throws SQLException {
+        boolean confirmation=true;
         if(userID==-1) {
             String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
                     "WHERE \"username\" = ?";
@@ -68,16 +70,34 @@ public class User {
                 userID=resultSet.getInt("userid");
             }
         }
-        String sqlAcquire="UPDATE \"MonsterCardGame\".\"package\" SET \"userid\" = "+userID+" WHERE \"packageid\" = " +
-                "(SELECT \"packageid\" from \"MonsterCardGame\".\"package\"" +
-                "WHERE \"userid\" IS NULL LIMIT 1) RETURNING (SELECT \"packageid\" from \"MonsterCardGame\".\"package\" " +
-                "                WHERE \"userid\" IS NULL LIMIT 1);";
-        Statement stmt=dbHandler.connection.createStatement();
-        ResultSet resultSet=stmt.executeQuery(sqlAcquire);
-        if (!resultSet.next()){
-            return false;
+        mutex.lock();
+        if (checkCoins(dbHandler)) {
+            String sqlAcquire = "UPDATE \"MonsterCardGame\".\"package\" SET \"userid\" = " + userID + " WHERE \"packageid\" = " +
+                    "(SELECT \"packageid\" from \"MonsterCardGame\".\"package\"" +
+                    "WHERE \"userid\" IS NULL LIMIT 1) RETURNING (SELECT \"packageid\" from \"MonsterCardGame\".\"package\" " +
+                    "                WHERE \"userid\" IS NULL LIMIT 1);";
+            String sqlReduceCoins = "UPDATE \"MonsterCardGame\".user set \"vcoins\"=\"vcoins\"-5 " +
+                    "where \"userid\"=" + userID + " AND \"vcoins\" > 0 RETURNING \"vcoins\"";
+            Statement stmt2 = dbHandler.connection.createStatement();
+            Statement stmt = dbHandler.connection.createStatement();
+            ResultSet resultSet = stmt.executeQuery(sqlAcquire);
+            if (!resultSet.next()){
+                confirmation=false;
+                System.out.println("No more packages left to buy!!");
+            }
+            else {
+                ResultSet resultSet2 = stmt2.executeQuery(sqlReduceCoins);
+                while (resultSet2.next()){
+                    vcoins=resultSet2.getInt("vcoins");
+                }
+            }
         }
-        return true;
+        else {
+            System.out.println("Not enough coins to buy package");
+            confirmation=false;
+        }
+        mutex.unlock();
+        return confirmation;
     }
 
     public void showAcquiredCards(DatabaseHandler dbHandler) throws SQLException {
@@ -109,8 +129,24 @@ public class User {
     }
 
     public void createDeck(String payload,DatabaseHandler dbHandler) throws SQLException {
+        mutex.lock();
         deck=new Deck();
         deck.createCards(payload,dbHandler);
+        mutex.unlock();
+    }
+
+    private boolean checkCoins(DatabaseHandler dbHandler) throws SQLException {
+        String sql="select \"vcoins\" from \"MonsterCardGame\".\"user\""+
+                " where \"userid\"="+userID;
+        Statement stmt=dbHandler.connection.createStatement();
+        ResultSet resultSet=stmt.executeQuery(sql);
+        while (resultSet.next()){
+            vcoins=resultSet.getInt("vcoins");
+        }
+        if (vcoins > 0){
+            return true;
+        }
+        return false;
     }
 
     public void printDeck(){
@@ -118,7 +154,9 @@ public class User {
             System.out.println("Empty Deck!!!");
             return;
         }
+        mutex.lock();
         deck.printDeck();
+        mutex.unlock();
     }
 
 }

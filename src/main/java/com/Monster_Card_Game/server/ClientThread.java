@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ClientThread extends Thread {
     DatabaseHandler dbHandler;
@@ -23,6 +24,7 @@ public class ClientThread extends Thread {
     PrintWriter out;
     BufferedReader in;
     UserManager userManager;
+    private ReentrantLock mutex=new ReentrantLock();
 
     public ClientThread(Socket clientSocket,UserManager userManager) throws SQLException, IOException {
         dbHandler = new DatabaseHandler();
@@ -57,8 +59,8 @@ public class ClientThread extends Thread {
                     out.println(handler.ServerResponse);
                     out.flush();
                 } else if (request.compareTo("packages") == 0) {
-                    boolean check = tokenGenerator.authenticate("admin");
-                    if (!check) {
+                    String user=tokenGenerator.returnUserFromToken(header);
+                    if (user.compareTo("admin")!=0) {
                         System.out.println("Admin privilege is required!");
                     }else {
                         PackageHandler packageHandler = new PackageHandler();
@@ -74,7 +76,7 @@ public class ClientThread extends Thread {
                     if (userManager.at(username).acquirePackage(dbHandler)) {
                         System.out.println(username + " acquired a package");
                     } else {
-                        System.out.println("There are no more packages left");
+                        System.out.println("Unsuccessful transaction");
                     }
                     out.println(handler.ServerResponse);
                     out.flush();
@@ -114,6 +116,8 @@ public class ClientThread extends Thread {
                 }
             } catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
                 System.out.println(e);
+                out.println(handler.ServerResponse);
+                out.flush();
             }
     }
 }
