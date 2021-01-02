@@ -25,6 +25,16 @@ public class TokenGenerator {
             user+=input.charAt(i);
             i++;
         }
-        return user;
+        if (authenticate(user,input)) {
+            return user;
+        }
+        return "-_-";
+    }
+
+    private boolean authenticate(String user,String header) {
+        if(header.contains("Authorization: Basic "+user+"-mtcgToken")){
+            return true;
+        }
+        return false;
     }
 }
