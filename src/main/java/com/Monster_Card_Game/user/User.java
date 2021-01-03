@@ -4,6 +4,9 @@ import com.Monster_Card_Game.server.DatabaseHandler;
 import com.Monster_Card_Game.stack.Deck;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.omg.PortableInterceptor.USER_EXCEPTION;
+
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -16,6 +19,8 @@ public class User {
     private String password;
     private int userID;
     private Deck deck;
+    private String bio;
+    private String image;
     private ReentrantLock mutex=new ReentrantLock();
 
     @JsonCreator
@@ -24,6 +29,14 @@ public class User {
         this.password=password;
         userID=-1; // userID is non existent
     }
+
+    @JsonCreator
+    User(@JsonProperty("Name")String username,@JsonProperty("Bio") String bio,@JsonProperty("Image")String image){
+        this.username=username;
+        this.bio=bio;
+        this.image=image;
+    }
+
 
     User(String username) throws SQLException {
         this.username=username;
@@ -54,6 +67,22 @@ public class User {
     }
 
     public void resetPassword(){ password=""; }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public boolean acquirePackage(DatabaseHandler dbHandler) throws SQLException {
         boolean confirmation=true;
@@ -154,6 +183,16 @@ public class User {
         mutex.lock();
         deck.printDeck();
         mutex.unlock();
+    }
+
+    public void updateUserData(DatabaseHandler dbHandler,User tempUser) throws IOException, SQLException {
+        String sqlUpdate="UPDATE \"MonsterCardGame\".\"user\" " +
+                "SET  \"firstname\"="+tempUser.getUsername()+" \"bio\"="+tempUser.getBio()+", \"image\"="
+                +tempUser.getImage()+" WHERE \"username\"="+username;
+        PreparedStatement preparedStatement=dbHandler.connection.prepareStatement(sqlUpdate);
+        bio=tempUser.getBio();
+        image=tempUser.getImage();
+        preparedStatement.executeUpdate();
     }
 
 }

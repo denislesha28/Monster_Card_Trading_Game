@@ -14,6 +14,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.SQLOutput;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ClientThread extends Thread {
@@ -113,6 +114,18 @@ public class ClientThread extends Thread {
                         out.println(handler.ServerResponse);
                         out.flush();
                     }
+                }
+                else if(request.contains("users/")){
+                    String user=tokenGenerator.returnUserFromToken(header);
+                    if (request.contains(user)) {
+                        User tempUser = jsonSerializer.convertUserToObject(payload);
+                        userManager.at(user).updateUserData(dbHandler, tempUser);
+                    }
+                    else{
+                        System.out.println("No permission to edit the user bad authentication");
+                    }
+                    out.println(handler.ServerResponse);
+                    out.flush();
                 }
             } catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
                 System.out.println(e);
