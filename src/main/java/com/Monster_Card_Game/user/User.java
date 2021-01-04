@@ -28,19 +28,15 @@ public class User {
         this.username=username;
         this.password=password;
         userID=-1; // userID is non existent
+        bio="";
+        image="";
     }
-
-    @JsonCreator
-    User(@JsonProperty("Name")String username,@JsonProperty("Bio") String bio,@JsonProperty("Image")String image){
-        this.username=username;
-        this.bio=bio;
-        this.image=image;
-    }
-
 
     User(String username) throws SQLException {
         this.username=username;
         userID=-1;
+        bio="";
+        image="";
     }
     public int getVcoins() {
         return vcoins;
@@ -82,6 +78,38 @@ public class User {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    private String deserialiseUserInfo(String payload){
+        int nameIndex=payload.indexOf("Name");
+        nameIndex+=8;
+        String firstName="";
+        for (int i=nameIndex;i<payload.length();i++){
+            if(payload.charAt(i)=='\"'){
+                break;
+            }
+            firstName+=payload.charAt(i);
+        }
+        System.out.println(firstName);
+        int bioIndex=payload.indexOf("Bio");
+        bioIndex+=7;
+        for (int i=bioIndex;i<payload.length();i++){
+            if(payload.charAt(i)=='\"'){
+                break;
+            }
+            bio+=payload.charAt(i);
+        }
+        System.out.println(bio);
+        int imageIndex=payload.indexOf("Image");
+        imageIndex+=9;
+        for (int i=imageIndex;i<payload.length();i++){
+            if(payload.charAt(i)=='\"'){
+                break;
+            }
+            image+=payload.charAt(i);
+        }
+        System.out.println(image);
+        return firstName;
     }
 
     public boolean acquirePackage(DatabaseHandler dbHandler) throws SQLException {
@@ -185,14 +213,30 @@ public class User {
         mutex.unlock();
     }
 
-    public void updateUserData(DatabaseHandler dbHandler,User tempUser) throws IOException, SQLException {
+    public void updateUserData(DatabaseHandler dbHandler,String payload) throws IOException, SQLException {
+        String firstName=deserialiseUserInfo(payload);
         String sqlUpdate="UPDATE \"MonsterCardGame\".\"user\" " +
-                "SET  \"firstname\"="+tempUser.getUsername()+" \"bio\"="+tempUser.getBio()+", \"image\"="
-                +tempUser.getImage()+" WHERE \"username\"="+username;
+                "SET  \"firstname\"= ? , \"bio\"= ? , \"image\"= ?"
+                +" WHERE \"username\"=?";
         PreparedStatement preparedStatement=dbHandler.connection.prepareStatement(sqlUpdate);
-        bio=tempUser.getBio();
-        image=tempUser.getImage();
+        preparedStatement.setString(1,firstName);
+        preparedStatement.setString(2,bio);
+        preparedStatement.setString(3,image);
+        preparedStatement.setString(4,username);
         preparedStatement.executeUpdate();
+    }
+
+    public void showUserData(DatabaseHandler dbHandler)throws SQLException{
+        String sqlSelect="select * from \"MonsterCardGame\".\"user\" where \"username\" = ? ";
+        PreparedStatement preparedStatement=dbHandler.connection.prepareStatement(sqlSelect);
+        preparedStatement.setString(1,username);
+        ResultSet resultSet=preparedStatement.executeQuery();
+        while (resultSet.next()){
+            System.out.println("Username: "+username);
+            System.out.println("Firstname: "+resultSet.getString("firstname"));
+            System.out.println("Bio: "+resultSet.getString("bio"));
+            System.out.println("Image: "+resultSet.getString("image"));
+        }
     }
 
 }

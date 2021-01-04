@@ -116,16 +116,22 @@ public class ClientThread extends Thread {
                     }
                 }
                 else if(request.contains("users/")){
-                    String user=tokenGenerator.returnUserFromToken(header);
+                    String user = tokenGenerator.returnUserFromToken(header);
                     if (request.contains(user)) {
-                        User tempUser = jsonSerializer.convertUserToObject(payload);
-                        userManager.at(user).updateUserData(dbHandler, tempUser);
-                    }
-                    else{
+                        if(handler.readHTTPVerb().compareTo("PUT")==0) {
+                            userManager.at(user).updateUserData(dbHandler, payload);
+                        }
+                        else if(handler.readHTTPVerb().compareTo("GET")==0){
+                            userManager.at(user).showUserData(dbHandler);
+                        }
+                    } else {
                         System.out.println("No permission to edit the user bad authentication");
                     }
                     out.println(handler.ServerResponse);
                     out.flush();
+                }
+                else if (request.compareTo("battles")==0){
+
                 }
             } catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
                 System.out.println(e);
