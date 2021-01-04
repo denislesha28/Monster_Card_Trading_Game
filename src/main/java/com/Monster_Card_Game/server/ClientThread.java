@@ -61,7 +61,10 @@ public class ClientThread extends Thread {
                     out.flush();
                 } else if (request.compareTo("packages") == 0) {
                     String user=tokenGenerator.returnUserFromToken(header);
-                    if (user.compareTo("admin")!=0) {
+                    if(userManager.at(user)==null){
+                        System.out.println("Not logged in");
+                    }
+                    else if (user.compareTo("admin")!=0) {
                         System.out.println("Admin privilege is required!");
                     }else {
                         PackageHandler packageHandler = new PackageHandler();
@@ -131,6 +134,16 @@ public class ClientThread extends Thread {
                     out.flush();
                 }
                 else if (request.compareTo("battles")==0){
+                    String username=tokenGenerator.returnUserFromToken(header);
+                    if (userManager.at(username)==null){
+                        System.out.println("Not logged in");
+                    }
+                    else {
+                        userManager.queueUp(userManager.at(username));
+                        userManager.startBattle();
+                    }
+                    out.println(handler.ServerResponse);
+                    out.flush();
 
                 }
             } catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {

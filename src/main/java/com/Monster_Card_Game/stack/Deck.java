@@ -59,4 +59,17 @@ public class Deck {
         }
     }
 
+    public Card getCard(int index){
+        Card card;
+        if (deck.get(index)==null){
+            System.out.println("Logical error");
+        }
+        card = deck.get(index);
+        return card;
+    }
+
+    public void addCard(Card card){
+        deck.add(card);
+    }
+
 }

@@ -80,6 +80,8 @@ public class User {
         this.image = image;
     }
 
+    public Deck returnDeck(){ return deck;  }
+
     private String deserialiseUserInfo(String payload){
         int nameIndex=payload.indexOf("Name");
         nameIndex+=8;
@@ -236,6 +238,18 @@ public class User {
             System.out.println("Firstname: "+resultSet.getString("firstname"));
             System.out.println("Bio: "+resultSet.getString("bio"));
             System.out.println("Image: "+resultSet.getString("image"));
+        }
+    }
+
+    public void battle(User other){
+        Deck opposingDeck=other.returnDeck();
+        if (opposingDeck==null){
+            System.out.println("Opponent hasn't configured his Deck yet");
+            return;
+        }
+        // Starting Battle
+        for (int i=0;i<100;i++){
+            System.out.println("Round "+i);
         }
     }
 
