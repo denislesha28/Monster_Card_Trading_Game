@@ -72,4 +72,19 @@ public class Deck {
         deck.add(card);
     }
 
+    public void removeCard(Card card){
+        deck.remove(card);
+    }
+
+    public boolean isEmpty(){
+        if (deck.isEmpty()){
+            return true;
+        }
+        return false;
+    }
+
+    public int getLength(){
+        return deck.size();
+    }
+
 }

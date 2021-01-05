@@ -15,9 +15,11 @@ public class SpellCard extends Card {
         int temp_dmg=damage;
         int enemy_dmg=enemyCard.getDamage();
         if(enemyCard.getMonsterType()==monsters.Kraken){
+            battleLog+="Kraken automatically won against any Spell Card!";
             return false;
         }
         if(this.attribute==elements.Water && enemyCard.getMonsterType()==monsters.Knight){
+            battleLog+="Knights automatically lose against any Water Spell!";
             return true;
         }
         if (battleElements(enemyCard) == 1) {
@@ -28,8 +30,18 @@ public class SpellCard extends Card {
             enemy_dmg *= 2;
         }
         if (temp_dmg > enemy_dmg) {
+            battleLog+=name+" card won against "+enemyCard.getName()+" card via damage calculation: "+name
+                    +" dmg "+temp_dmg+" > "+enemyCard.getName()+" dmg "+enemy_dmg;
             return true;
-        } else {
+        }
+        else if(temp_dmg==enemy_dmg){
+            battleLog+=name+" card draw against "+enemyCard.getName()+" card via damage calculation: "+name
+                    +" dmg "+temp_dmg+" =  "+enemyCard.getName()+" dmg "+enemy_dmg;
+            return false;
+        }
+        else {
+            battleLog+=enemyCard.getName()+" card won against "+name+" card via damage calculation: "+enemyCard.getName()
+                    +" dmg "+enemy_dmg+" > "+name+" dmg "+temp_dmg;
             return false;
         }
     }

@@ -1,5 +1,6 @@
 package com.Monster_Card_Game.user;
 
+import com.Monster_Card_Game.cards.Card;
 import com.Monster_Card_Game.server.DatabaseHandler;
 import com.Monster_Card_Game.stack.Deck;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -7,10 +8,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.omg.PortableInterceptor.USER_EXCEPTION;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class User {
@@ -242,15 +245,63 @@ public class User {
     }
 
     public void battle(User other){
+        Random random=new Random();
+        int user1Rand=0;
+        int user2Rand=0;
+        Card cardPlayer1;
+        Card cardPlayer2;
+        int user1DeckCounter=4;
+        int user2DeckCounter=4;
         Deck opposingDeck=other.returnDeck();
         if (opposingDeck==null){
             System.out.println("Opponent hasn't configured his Deck yet");
             return;
         }
         // Starting Battle
-        for (int i=0;i<100;i++){
-            System.out.println("Round "+i);
+        int i=0;
+        while (true){
+            if(deck.isEmpty()){
+                System.out.println("Player: "+username);
+                return;
+            }
+            else if(opposingDeck.isEmpty()){
+                System.out.println("Player: "+other.getUsername());
+                return;
+            }
+            System.out.println("\n\nRound "+i);
+            System.out.println("Deck "+username+" Cards left:"+deck.getLength());
+            System.out.println("Deck "+other.getUsername()+" Cards left:"+opposingDeck.getLength());
+            user1Rand=random.nextInt(user1DeckCounter);
+            user2Rand=random.nextInt(user2DeckCounter);
+            cardPlayer1=deck.getCard(user1Rand);
+            cardPlayer2=opposingDeck.getCard(user2Rand);
+            System.out.println(cardPlayer1.getName()+" vs "+cardPlayer2.getName());
+            if(cardPlayer1.battleCard(cardPlayer2)){
+                deck.addCard(cardPlayer2);
+                opposingDeck.removeCard(cardPlayer2);
+                user2DeckCounter--;
+                user1DeckCounter++;
+                System.out.println(cardPlayer1.getBattleLog());
+                cardPlayer1.resetBattleLog();
+                cardPlayer2.resetBattleLog();
+            }
+            else if(cardPlayer2.battleCard(cardPlayer1)){
+                deck.removeCard(cardPlayer1);
+                opposingDeck.addCard(cardPlayer1);
+                user1DeckCounter--;
+                user2DeckCounter++;
+                System.out.println(cardPlayer2.getBattleLog());
+                cardPlayer2.resetBattleLog();
+                cardPlayer1.resetBattleLog();
+            }
+            else {
+                System.out.println(cardPlayer1.getBattleLog());
+                cardPlayer1.resetBattleLog();
+                cardPlayer2.resetBattleLog();
+                System.out.println("Draw between Cards!!");
+            }
         }
+        //System.out.println("Maximum number of Rounds exceeded. Draw !");
     }
 
 }

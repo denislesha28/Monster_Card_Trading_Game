@@ -59,10 +59,19 @@ public class UserManager {
         mutex.unlock();
         if(user1==null || user2==null){
             System.out.println("Waiting for other Users to queue up");
+            mutex.lock();
+            if(user2==null) {
+                battleQueue.add(user1);
+            }
+            else {
+                battleQueue.add(user2);
+            }
+            mutex.unlock();
             return;
         }
         else {
             System.out.println("Starting Battle between: "+user1.getUsername()+" and "+user2.getUsername());
+            user1.battle(user2);
         }
     }
 
