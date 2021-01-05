@@ -258,8 +258,7 @@ public class User {
             return;
         }
         // Starting Battle
-        int i=0;
-        while (true){
+        for (int i=0;i<100;i++){
             if(deck.isEmpty()){
                 System.out.println("Player: "+username);
                 return;
