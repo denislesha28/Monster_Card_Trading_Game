@@ -7,6 +7,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.omg.PortableInterceptor.USER_EXCEPTION;
 
+import javax.xml.crypto.Data;
+import java.awt.dnd.DropTarget;
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.PreparedStatement;
@@ -25,6 +27,7 @@ public class User {
     private String bio;
     private String image;
     private ReentrantLock mutex=new ReentrantLock();
+    private StatsManager statsManager=new StatsManager();
 
     @JsonCreator
     User(@JsonProperty("Username")String username,@JsonProperty("Password")String password)  {
@@ -122,7 +125,7 @@ public class User {
         if(userID==-1) {
             String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
                     "WHERE \"username\" = ?";
-            PreparedStatement preparedStatement = dbHandler.connection.prepareStatement(getUserID);
+            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -137,8 +140,8 @@ public class User {
                     "                WHERE \"userid\" IS NULL LIMIT 1);";
             String sqlReduceCoins = "UPDATE \"MonsterCardGame\".user set \"vcoins\"=\"vcoins\"-5 " +
                     "where \"userid\"=" + userID + " AND \"vcoins\" > 0 RETURNING \"vcoins\"";
-            Statement stmt2 = dbHandler.connection.createStatement();
-            Statement stmt = dbHandler.connection.createStatement();
+            Statement stmt2 = dbHandler.getConnection().createStatement();
+            Statement stmt = dbHandler.getConnection().createStatement();
             ResultSet resultSet = stmt.executeQuery(sqlAcquire);
             if (!resultSet.next()){
                 confirmation=false;
@@ -163,7 +166,7 @@ public class User {
         if(userID==-1) {
             String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
                     "WHERE \"username\" = ?";
-            PreparedStatement preparedStatement = dbHandler.connection.prepareStatement(getUserID);
+            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
             preparedStatement.setString(1, username);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -175,7 +178,7 @@ public class User {
                 " join \"MonsterCardGame\".\"package\" as p" +
                 " on c.\"packageid\"=p.\"packageid\"" +
                 " where p.\"userid\"="+userID;
-        Statement stmt=dbHandler.connection.createStatement();
+        Statement stmt=dbHandler.getConnection().createStatement();
         System.out.println(selectCards);
         ResultSet resultSet=stmt.executeQuery(selectCards);
         int i=0;
@@ -197,7 +200,7 @@ public class User {
     private boolean checkCoins(DatabaseHandler dbHandler) throws SQLException {
         String sql="select \"vcoins\" from \"MonsterCardGame\".\"user\""+
                 " where \"userid\"="+userID;
-        Statement stmt=dbHandler.connection.createStatement();
+        Statement stmt=dbHandler.getConnection().createStatement();
         ResultSet resultSet=stmt.executeQuery(sql);
         while (resultSet.next()){
             vcoins=resultSet.getInt("vcoins");
@@ -223,7 +226,7 @@ public class User {
         String sqlUpdate="UPDATE \"MonsterCardGame\".\"user\" " +
                 "SET  \"firstname\"= ? , \"bio\"= ? , \"image\"= ?"
                 +" WHERE \"username\"=?";
-        PreparedStatement preparedStatement=dbHandler.connection.prepareStatement(sqlUpdate);
+        PreparedStatement preparedStatement=dbHandler.getConnection().prepareStatement(sqlUpdate);
         preparedStatement.setString(1,firstName);
         preparedStatement.setString(2,bio);
         preparedStatement.setString(3,image);
@@ -233,7 +236,7 @@ public class User {
 
     public void showUserData(DatabaseHandler dbHandler)throws SQLException{
         String sqlSelect="select * from \"MonsterCardGame\".\"user\" where \"username\" = ? ";
-        PreparedStatement preparedStatement=dbHandler.connection.prepareStatement(sqlSelect);
+        PreparedStatement preparedStatement=dbHandler.getConnection().prepareStatement(sqlSelect);
         preparedStatement.setString(1,username);
         ResultSet resultSet=preparedStatement.executeQuery();
         while (resultSet.next()){
@@ -301,6 +304,10 @@ public class User {
             }
         }
         //System.out.println("Maximum number of Rounds exceeded. Draw !");
+    }
+
+    public void showUserStats(DatabaseHandler dbHandler) throws SQLException {
+        statsManager.showUserStats(username,dbHandler);
     }
 
 }

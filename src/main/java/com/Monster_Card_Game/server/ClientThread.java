@@ -144,7 +144,16 @@ public class ClientThread extends Thread {
                     }
                     out.println(handler.ServerResponse);
                     out.flush();
-
+                }
+                else if (request.compareTo("stats")==0){
+                    String username=tokenGenerator.returnUserFromToken(header);
+                    if (userManager.at(username)==null) {
+                        System.out.println("Not logged in");
+                    }else {
+                        userManager.at(username).showUserStats(dbHandler);
+                    }
+                    out.println(handler.ServerResponse);
+                    out.flush();
                 }
             } catch (IOException | SQLException | InvalidKeySpecException | NoSuchAlgorithmException e) {
                 System.out.println(e);

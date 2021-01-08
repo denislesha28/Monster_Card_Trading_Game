@@ -9,7 +9,7 @@ public class DatabaseHandler {
     String jdbcURL;
     String username;
     String password;
-    public Connection connection;
+    private Connection connection;
     PasswordHasher pwHasher=new PasswordHasher();
     Statement stmt;
     public DatabaseHandler() throws SQLException {
@@ -18,6 +18,9 @@ public class DatabaseHandler {
         password="root";
         connection = DriverManager.getConnection(jdbcURL,username,password);
         System.out.println("Database Connected");
+    }
+    public Connection getConnection(){
+        return connection;
     }
     public void createUser(String username,String password) throws SQLException, InvalidKeySpecException, NoSuchAlgorithmException {
         password=pwHasher.generateStrongPasswordHash(password);

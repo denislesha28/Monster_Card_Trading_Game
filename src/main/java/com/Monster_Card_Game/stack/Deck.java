@@ -32,7 +32,7 @@ public class Deck {
         System.out.println(selectSql);
         for (int i=0;i<cards.length;i++){
             cards[i]=cards[i].replace("\"","");
-            PreparedStatement preparedStatement=dbHandler.connection.prepareStatement(selectSql);
+            PreparedStatement preparedStatement=dbHandler.getConnection().prepareStatement(selectSql);
             preparedStatement.setString(1,cards[i]);
             ResultSet resultSet=preparedStatement.executeQuery();
             while (resultSet.next()){

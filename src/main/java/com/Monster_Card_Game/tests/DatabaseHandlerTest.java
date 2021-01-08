@@ -22,7 +22,7 @@ public class DatabaseHandlerTest {
         //Act
         dbHandler.createUser(username,password);
         String selectStatement="Select \"username\" from \"MonsterCardGame\".\"user\" ";
-        Statement stmt=dbHandler.connection.createStatement();
+        Statement stmt=dbHandler.getConnection().createStatement();
         ResultSet resultSet=stmt.executeQuery(selectStatement);
         while (resultSet.next()){
             actual=resultSet.getString("username");

@@ -33,13 +33,13 @@ public class PackageHandler {
         String insertCard="INSERT INTO \"MonsterCardGame\".\"card\"(\"cardserialid\", \"carddamage\", \"cardname\"," +
                 "\"cardattribute\", \"cardmonster\", \"packageid\")" +
                 "VALUES (?, ?, ?, ?, ?, ?)";
-        Statement stmt=dbHandler.connection.createStatement();
+        Statement stmt=dbHandler.getConnection().createStatement();
         ResultSet resultSet=stmt.executeQuery(insertPackage);
         while (resultSet.next()){
             packageID=Integer.parseInt(resultSet.getString("packageid"));
         }
         for (int i=0;i<cardPackage.length;i++){
-            PreparedStatement preparedStatement=dbHandler.connection.prepareStatement(insertCard);
+            PreparedStatement preparedStatement=dbHandler.getConnection().prepareStatement(insertCard);
             preparedStatement.setString(1,cardPackage[i].getCardID());
             preparedStatement.setInt(2,cardPackage[i].getDamage());
             preparedStatement.setString(3,cardPackage[i].getName());
