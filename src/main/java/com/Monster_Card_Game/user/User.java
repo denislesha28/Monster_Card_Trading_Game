@@ -90,6 +90,19 @@ public class User {
 
     public Deck returnDeck(){ return deck;  }
 
+    public void getUserIdDatabase(DatabaseHandler dbHandler) throws SQLException {
+        if(userID==-1) {
+            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
+                    "WHERE \"username\" = ?";
+            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                userID=resultSet.getInt("userid");
+            }
+        }
+    }
+
     private String deserialiseUserInfo(String payload){
         int nameIndex=payload.indexOf("Name");
         nameIndex+=8;
@@ -124,16 +137,7 @@ public class User {
 
     public boolean acquirePackage(DatabaseHandler dbHandler) throws SQLException {
         boolean confirmation=true;
-        if(userID==-1) {
-            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
-                    "WHERE \"username\" = ?";
-            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                userID=resultSet.getInt("userid");
-            }
-        }
+        getUserIdDatabase(dbHandler);
         mutex.lock();
         if (checkCoins(dbHandler)) {
             String sqlAcquire = "UPDATE \"MonsterCardGame\".\"package\" SET \"userid\" = " + userID + " WHERE \"packageid\" = " +
@@ -165,16 +169,7 @@ public class User {
     }
 
     public void showAcquiredCards(DatabaseHandler dbHandler) throws SQLException {
-        if(userID==-1) {
-            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
-                    "WHERE \"username\" = ?";
-            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                userID=resultSet.getInt("userid");
-            }
-        }
+        getUserIdDatabase(dbHandler);
         String selectCards="select * " +
                 "from \"MonsterCardGame\".\"card\" as c" +
                 " join \"MonsterCardGame\".\"package\" as p" +
@@ -193,16 +188,7 @@ public class User {
     }
 
     public void createDeck(String payload,DatabaseHandler dbHandler) throws SQLException {
-        if(userID==-1) {
-            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
-                    "WHERE \"username\" = ?";
-            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                userID=resultSet.getInt("userid");
-            }
-        }
+        getUserIdDatabase(dbHandler);
         mutex.lock();
         deck=new Deck();
         deck.createCards(userID,payload,dbHandler);
@@ -331,16 +317,7 @@ public class User {
     }
 
     public void showUserScoreboard(DatabaseHandler dbHandler)throws SQLException{
-        if(userID==-1) {
-            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
-                    "WHERE \"username\" = ?";
-            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
-            preparedStatement.setString(1, username);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                userID=resultSet.getInt("userid");
-            }
-        }
+        getUserIdDatabase(dbHandler);
         statsManager.showScoreboard(dbHandler,this);
     }
 
