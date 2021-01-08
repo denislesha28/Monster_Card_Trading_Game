@@ -55,6 +55,30 @@ public class Deck {
         }
     }
 
+    public void autoGenerateCards(DatabaseHandler dbHandler,int userID) throws SQLException {
+        String selectSql="SELECT cardserialid, cardmonster, carddamage, cardname" +
+                " FROM \"MonsterCardGame\".\"card\" as c " +
+                "join \"MonsterCardGame\".\"package\" as p " +
+                "on c.\"packageid\"=p.\"packageid\" " +
+                "join \"MonsterCardGame\".\"user\" as u " +
+                "on u.\"userid\"=p.\"userid\" "+
+                " where u.\"userid\"=? LIMIT 4";
+        PreparedStatement preparedStatement=dbHandler.getConnection().prepareStatement(selectSql);
+        preparedStatement.setInt(1,userID);
+        ResultSet resultSet=preparedStatement.executeQuery();
+        while (resultSet.next()) {
+            int cardDmg = resultSet.getInt("carddamage");
+            String cardName = resultSet.getString("cardname");
+            String monsterType = resultSet.getString("cardmonster");
+            String cardSerialID = resultSet.getString("cardserialid");
+            if (monsterType.compareTo("NONE") == 0) {
+                deck.add(new SpellCard(cardName, cardDmg, cardSerialID));
+            } else {
+                deck.add(new MonsterCard(cardName, cardDmg, cardSerialID));
+            }
+        }
+    }
+
     public void printDeck(){
         for (int i=0;i<deck.size();i++){
             System.out.println("Card number "+i+" Name: "+deck.get(i).getName()+" Damage: "+deck.get(i).getDamage()
