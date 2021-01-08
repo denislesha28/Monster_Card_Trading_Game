@@ -74,6 +74,8 @@ public class User {
         return bio;
     }
 
+    public int getUserID() { return  userID; }
+
     public void setBio(String bio) {
         this.bio = bio;
     }
@@ -191,9 +193,19 @@ public class User {
     }
 
     public void createDeck(String payload,DatabaseHandler dbHandler) throws SQLException {
+        if(userID==-1) {
+            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
+                    "WHERE \"username\" = ?";
+            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                userID=resultSet.getInt("userid");
+            }
+        }
         mutex.lock();
         deck=new Deck();
-        deck.createCards(payload,dbHandler);
+        deck.createCards(userID,payload,dbHandler);
         mutex.unlock();
     }
 
@@ -247,7 +259,9 @@ public class User {
         }
     }
 
-    public void battle(User other){
+
+
+    public void battle(User other,DatabaseHandler dbHandler) throws SQLException {
         Random random=new Random();
         int user1Rand=0;
         int user2Rand=0;
@@ -263,11 +277,15 @@ public class User {
         // Starting Battle
         for (int i=0;i<100;i++){
             if(deck.isEmpty()){
-                System.out.println("Player: "+username);
+                statsManager.insertBattleLog(dbHandler,other.getUserID(),userID,false);
+                statsManager.updateUserStats(other.getUserID(),userID,false,dbHandler);
+                System.out.println("Player: "+other.getUsername()+" won");
                 return;
             }
             else if(opposingDeck.isEmpty()){
-                System.out.println("Player: "+other.getUsername());
+                statsManager.insertBattleLog(dbHandler,userID,other.getUserID(),false);
+                statsManager.updateUserStats(userID,other.getUserID(),false,dbHandler);
+                System.out.println("Player: "+username+" won");
                 return;
             }
             System.out.println("\n\nRound "+i);
@@ -303,11 +321,27 @@ public class User {
                 System.out.println("Draw between Cards!!");
             }
         }
-        //System.out.println("Maximum number of Rounds exceeded. Draw !");
+        statsManager.insertBattleLog(dbHandler,other.getUserID(),userID,true);
+        statsManager.updateUserStats(userID,other.getUserID(),true,dbHandler);
+        System.out.println("Maximum number of Rounds exceeded. Draw !");
     }
 
     public void showUserStats(DatabaseHandler dbHandler) throws SQLException {
         statsManager.showUserStats(username,dbHandler);
+    }
+
+    public void showUserScoreboard(DatabaseHandler dbHandler)throws SQLException{
+        if(userID==-1) {
+            String getUserID = "Select \"userid\" from \"MonsterCardGame\".\"user\"\n" +
+                    "WHERE \"username\" = ?";
+            PreparedStatement preparedStatement = dbHandler.getConnection().prepareStatement(getUserID);
+            preparedStatement.setString(1, username);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                userID=resultSet.getInt("userid");
+            }
+        }
+        statsManager.showScoreboard(dbHandler,this);
     }
 
 }

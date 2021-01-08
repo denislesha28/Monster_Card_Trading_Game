@@ -140,7 +140,7 @@ public class ClientThread extends Thread {
                     }
                     else {
                         userManager.queueUp(userManager.at(username));
-                        userManager.startBattle();
+                        userManager.startBattle(dbHandler);
                     }
                     out.println(handler.ServerResponse);
                     out.flush();
@@ -151,6 +151,16 @@ public class ClientThread extends Thread {
                         System.out.println("Not logged in");
                     }else {
                         userManager.at(username).showUserStats(dbHandler);
+                    }
+                    out.println(handler.ServerResponse);
+                    out.flush();
+                }
+                else if(request.compareTo("score")==0){
+                    String username=tokenGenerator.returnUserFromToken(header);
+                    if (userManager.at(username)==null) {
+                        System.out.println("Not logged in");
+                    }else {
+                        userManager.at(username).showUserScoreboard(dbHandler);
                     }
                     out.println(handler.ServerResponse);
                     out.flush();

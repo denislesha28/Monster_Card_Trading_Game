@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Deck {
     List<Card> deck=new ArrayList(4);
-    public void createCards(String payload,DatabaseHandler dbHandler) throws SQLException {
+    public void createCards(int userID,String payload,DatabaseHandler dbHandler) throws SQLException {
         if (deck.size()==4){
             System.out.println("Deck already full!");
             return;
@@ -27,9 +27,12 @@ public class Deck {
         cards[0]=cards[0].replace("[","");
         cards[cards.length-1]=cards[cards.length-1].replace("]","");
         String selectSql="SELECT cardserialid, cardmonster, carddamage, cardname" +
-                " FROM \"MonsterCardGame\".\"card\"" +
-                " where cardserialid=?";
-        System.out.println(selectSql);
+                " FROM \"MonsterCardGame\".\"card\" as c " +
+                "join \"MonsterCardGame\".\"package\" as p " +
+                "on c.\"packageid\"=p.\"packageid\" " +
+                "join \"MonsterCardGame\".\"user\" as u " +
+                "on u.\"userid\"=p.\"userid\" "+
+                " where cardserialid=? AND u.\"userid\"="+userID;
         for (int i=0;i<cards.length;i++){
             cards[i]=cards[i].replace("\"","");
             PreparedStatement preparedStatement=dbHandler.getConnection().prepareStatement(selectSql);
