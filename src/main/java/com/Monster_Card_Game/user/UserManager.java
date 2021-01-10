@@ -41,7 +41,6 @@ public class UserManager {
             }
             mutex.unlock();
         }
-        System.out.println("User not logged in");
         return null;
     }
 

@@ -51,7 +51,6 @@ public class Deck {
                 }
 
             }
-            System.out.println(cards[i]);
         }
     }
 

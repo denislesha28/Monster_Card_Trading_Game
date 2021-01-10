@@ -17,7 +17,7 @@ public class DatabaseHandler {
         username="postgres";
         password="root";
         connection = DriverManager.getConnection(jdbcURL,username,password);
-        System.out.println("Database Connected");
+        //System.out.println("Database Connected");
     }
     public Connection getConnection(){
         return connection;
@@ -26,7 +26,6 @@ public class DatabaseHandler {
         password=pwHasher.generateStrongPasswordHash(password);
         String insertStatement="INSERT INTO \"MonsterCardGame\".\"user\" (\"username\",\"password\") " +
                 "VALUES (\'"+username+"\',\'"+password+"\')";
-        System.out.println(insertStatement);
         stmt=connection.createStatement();
         stmt.executeUpdate(insertStatement);
     }

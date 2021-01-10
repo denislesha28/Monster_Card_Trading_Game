@@ -14,6 +14,7 @@ public class RequestContext {
             "Content-Length:1\r\n\r\n";
 
     public String readHeader(BufferedReader in) throws IOException {
+        System.out.println();
         headerInfo = "";
         String line = in.readLine();
 

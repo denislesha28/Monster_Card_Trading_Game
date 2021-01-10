@@ -44,7 +44,7 @@ public class ClientThread extends Thread {
                 String header = handler.readHeader(in);
                 String payload = handler.readPayload(in);
                 String request = handler.readRequest();
-                System.out.println(payload + "\n" + request);
+                System.out.println(payload);
                 if (request.compareTo("users") == 0) {
                     User user = jsonSerializer.convertUserToObject(payload);
                     dbHandler.createUser(user.getUsername(), user.getPassword());
@@ -97,7 +97,7 @@ public class ClientThread extends Thread {
                     }
                     out.println(handler.ServerResponse);
                     out.flush();
-                } else if (request.compareTo("deck") == 0) {
+                } else if (request.compareTo("deck") == 0 || request.compareTo("deck?format=plain")==0) {
                     if (handler.readHTTPVerb().compareTo("GET") == 0) {
                         String username = tokenGenerator.returnUserFromToken(header);
                         if (userManager.at(username) == null) {

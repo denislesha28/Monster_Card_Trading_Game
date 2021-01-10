@@ -1,0 +1,613 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 13.1
+-- Dumped by pg_dump version 13.1
+
+-- Started on 2021-01-10 22:21:53
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 5 (class 2615 OID 16396)
+-- Name: MonsterCardGame; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA "MonsterCardGame";
+
+
+ALTER SCHEMA "MonsterCardGame" OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 209 (class 1259 OID 73786)
+-- Name: battlelog; Type: TABLE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE TABLE "MonsterCardGame".battlelog (
+    battleid integer NOT NULL,
+    winnerid integer NOT NULL,
+    loserid integer NOT NULL,
+    battletime timestamp without time zone DEFAULT now() NOT NULL,
+    draw boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE "MonsterCardGame".battlelog OWNER TO postgres;
+
+--
+-- TOC entry 208 (class 1259 OID 73784)
+-- Name: battlelog_battleid_seq; Type: SEQUENCE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE SEQUENCE "MonsterCardGame".battlelog_battleid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "MonsterCardGame".battlelog_battleid_seq OWNER TO postgres;
+
+--
+-- TOC entry 3059 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: battlelog_battleid_seq; Type: SEQUENCE OWNED BY; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER SEQUENCE "MonsterCardGame".battlelog_battleid_seq OWNED BY "MonsterCardGame".battlelog.battleid;
+
+
+--
+-- TOC entry 203 (class 1259 OID 32792)
+-- Name: card; Type: TABLE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE TABLE "MonsterCardGame".card (
+    cardnumber integer NOT NULL,
+    cardserialid character varying(255) NOT NULL,
+    carddamage integer NOT NULL,
+    cardname character varying(100) NOT NULL,
+    cardattribute character varying(255),
+    cardmonster character varying(255),
+    packageid integer
+);
+
+
+ALTER TABLE "MonsterCardGame".card OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 32790)
+-- Name: card_cardnumber_seq; Type: SEQUENCE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE SEQUENCE "MonsterCardGame".card_cardnumber_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "MonsterCardGame".card_cardnumber_seq OWNER TO postgres;
+
+--
+-- TOC entry 3061 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: card_cardnumber_seq; Type: SEQUENCE OWNED BY; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER SEQUENCE "MonsterCardGame".card_cardnumber_seq OWNED BY "MonsterCardGame".card.cardnumber;
+
+
+--
+-- TOC entry 201 (class 1259 OID 24606)
+-- Name: package; Type: TABLE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE TABLE "MonsterCardGame".package (
+    packageid integer NOT NULL,
+    packagename character varying(100) DEFAULT 'package'::character varying,
+    packagecost integer DEFAULT 5,
+    userid integer
+);
+
+
+ALTER TABLE "MonsterCardGame".package OWNER TO postgres;
+
+--
+-- TOC entry 200 (class 1259 OID 24604)
+-- Name: package_packageid_seq; Type: SEQUENCE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE SEQUENCE "MonsterCardGame".package_packageid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "MonsterCardGame".package_packageid_seq OWNER TO postgres;
+
+--
+-- TOC entry 3063 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: package_packageid_seq; Type: SEQUENCE OWNED BY; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER SEQUENCE "MonsterCardGame".package_packageid_seq OWNED BY "MonsterCardGame".package.packageid;
+
+
+--
+-- TOC entry 207 (class 1259 OID 65560)
+-- Name: stats; Type: TABLE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE TABLE "MonsterCardGame".stats (
+    scoreid integer NOT NULL,
+    userid integer NOT NULL,
+    elo integer DEFAULT 100 NOT NULL,
+    wins integer DEFAULT 0 NOT NULL,
+    losses integer DEFAULT 0 NOT NULL,
+    draws integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE "MonsterCardGame".stats OWNER TO postgres;
+
+--
+-- TOC entry 206 (class 1259 OID 65558)
+-- Name: stats_scoreid_seq; Type: SEQUENCE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE SEQUENCE "MonsterCardGame".stats_scoreid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "MonsterCardGame".stats_scoreid_seq OWNER TO postgres;
+
+--
+-- TOC entry 3065 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: stats_scoreid_seq; Type: SEQUENCE OWNED BY; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER SEQUENCE "MonsterCardGame".stats_scoreid_seq OWNED BY "MonsterCardGame".stats.scoreid;
+
+
+--
+-- TOC entry 205 (class 1259 OID 32808)
+-- Name: user; Type: TABLE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE TABLE "MonsterCardGame"."user" (
+    userid integer NOT NULL,
+    username character varying(255) NOT NULL,
+    password character varying(255) NOT NULL,
+    vcoins integer DEFAULT 20 NOT NULL,
+    bio character varying(255) DEFAULT 'default bio'::character varying,
+    image character varying(255) DEFAULT 'empty'::character varying,
+    firstname character varying(255) DEFAULT 'anonym'::character varying
+);
+
+
+ALTER TABLE "MonsterCardGame"."user" OWNER TO postgres;
+
+--
+-- TOC entry 204 (class 1259 OID 32806)
+-- Name: user_userid_seq; Type: SEQUENCE; Schema: MonsterCardGame; Owner: postgres
+--
+
+CREATE SEQUENCE "MonsterCardGame".user_userid_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE "MonsterCardGame".user_userid_seq OWNER TO postgres;
+
+--
+-- TOC entry 3067 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: user_userid_seq; Type: SEQUENCE OWNED BY; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER SEQUENCE "MonsterCardGame".user_userid_seq OWNED BY "MonsterCardGame"."user".userid;
+
+
+--
+-- TOC entry 2891 (class 2604 OID 73789)
+-- Name: battlelog battleid; Type: DEFAULT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".battlelog ALTER COLUMN battleid SET DEFAULT nextval('"MonsterCardGame".battlelog_battleid_seq'::regclass);
+
+
+--
+-- TOC entry 2880 (class 2604 OID 32795)
+-- Name: card cardnumber; Type: DEFAULT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".card ALTER COLUMN cardnumber SET DEFAULT nextval('"MonsterCardGame".card_cardnumber_seq'::regclass);
+
+
+--
+-- TOC entry 2877 (class 2604 OID 24609)
+-- Name: package packageid; Type: DEFAULT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".package ALTER COLUMN packageid SET DEFAULT nextval('"MonsterCardGame".package_packageid_seq'::regclass);
+
+
+--
+-- TOC entry 2886 (class 2604 OID 65563)
+-- Name: stats scoreid; Type: DEFAULT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".stats ALTER COLUMN scoreid SET DEFAULT nextval('"MonsterCardGame".stats_scoreid_seq'::regclass);
+
+
+--
+-- TOC entry 2881 (class 2604 OID 32811)
+-- Name: user userid; Type: DEFAULT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame"."user" ALTER COLUMN userid SET DEFAULT nextval('"MonsterCardGame".user_userid_seq'::regclass);
+
+
+--
+-- TOC entry 3052 (class 0 OID 73786)
+-- Dependencies: 209
+-- Data for Name: battlelog; Type: TABLE DATA; Schema: MonsterCardGame; Owner: postgres
+--
+
+COPY "MonsterCardGame".battlelog (battleid, winnerid, loserid, battletime, draw) FROM stdin;
+1	32	31	2021-01-08 20:12:18.983444	t
+2	31	32	2021-01-08 20:52:26.43265	t
+\.
+
+
+--
+-- TOC entry 3046 (class 0 OID 32792)
+-- Dependencies: 203
+-- Data for Name: card; Type: TABLE DATA; Schema: MonsterCardGame; Owner: postgres
+--
+
+COPY "MonsterCardGame".card (cardnumber, cardserialid, carddamage, cardname, cardattribute, cardmonster, packageid) FROM stdin;
+131	67f9048f-99b8-466	10	WaterGoblin	Water	Goblin	34
+132	aa9999a049c6-8f4a-651864b14e62	50	RegularSpell	Normal	NONE	34
+133	d6e9c720-9b5a-40-bc34752e3463	20	Knight	Normal	Knight	34
+134	02a9c76e-b17d-240-	45	RegularSpell	Normal	NONE	34
+135	2508bf5c-43b4-8c77-bc677decadef	25	FireElf	Fire	NONE	34
+86	845f0dc7-37d0-426e-994e-43fc3ac83c08	10	WaterGoblin	Water	Goblin	25
+87	99f8f8dc-e25e-4a95-aa2c-782823f36e2a	50	Dragon	Normal	Dragon	25
+88	e85e3976-7c86-4d06-9a80-641c2019a79f	20	WaterSpell	Water	NONE	25
+89	1cb6ab86-bdb2-47e5-b6e4-68c5ab389334	45	Ork	Normal	Ork	25
+90	dfdd758f-649c-40f9-ba3a-8657f4b3439f	25	FireSpell	Fire	NONE	25
+91	644808c2-f87a-4600-b313-122b02322fd5	9	WaterGoblin	Water	Goblin	26
+92	4a2757d6-b1c3-47ac-b9a3-91deab093531	55	Dragon	Normal	Dragon	26
+93	91a6471b-1426-43f6-ad65-6fc473e16f9f	21	WaterSpell	Water	NONE	26
+94	4ec8b269-0dfa-4f97-809a-2c63fe2a0025	55	Ork	Normal	Ork	26
+95	f8043c23-1534-4487-b66b-238e0c3c39b5	23	WaterSpell	Water	NONE	26
+96	b017ee50-1c14-44e2-bfd6-2c0c5653a37c	11	WaterGoblin	Water	Goblin	27
+97	d04b736a-e874-4137-b191-638e0ff3b4e7	70	Dragon	Normal	Dragon	27
+98	88221cfe-1f84-41b9-8152-8e36c6a354de	22	WaterSpell	Water	NONE	27
+99	1d3f175b-c067-4359-989d-96562bfa382c	40	Ork	Normal	Ork	27
+100	171f6076-4eb5-4a7d-b3f2-2d650cc3d237	28	RegularSpell	Normal	NONE	27
+101	ed1dc1bc-f0aa-4a0c-8d43-1402189b33c8	10	WaterGoblin	Water	Goblin	28
+102	65ff5f23-1e70-4b79-b3bd-f6eb679dd3b5	50	Dragon	Normal	Dragon	28
+103	55ef46c4-016c-4168-bc43-6b9b1e86414f	20	WaterSpell	Water	NONE	28
+104	f3fad0f2-a1af-45df-b80d-2e48825773d9	45	Ork	Normal	Ork	28
+105	8c20639d-6400-4534-bd0f-ae563f11f57a	25	WaterSpell	Water	NONE	28
+106	d7d0cb94-2cbf-4f97-8ccf-9933dc5354b8	9	WaterGoblin	Water	Goblin	29
+107	44c82fbc-ef6d-44ab-8c7a-9fb19a0e7c6e	55	Dragon	Normal	Dragon	29
+108	2c98cd06-518b-464c-b911-8d787216cddd	21	WaterSpell	Water	NONE	29
+109	951e886a-0fbf-425d-8df5-af2ee4830d85	55	Ork	Normal	Ork	29
+110	dcd93250-25a7-4dca-85da-cad2789f7198	23	FireSpell	Fire	NONE	29
+111	b2237eca-0271-43bd-87f6-b22f70d42ca4	11	WaterGoblin	Water	Goblin	30
+112	9e8238a4-8a7a-487f-9f7d-a8c97899eb48	70	Dragon	Normal	Dragon	30
+113	d60e23cf-2238-4d49-844f-c7589ee5342e	22	WaterSpell	Water	NONE	30
+114	fc305a7a-36f7-4d30-ad27-462ca0445649	40	Ork	Normal	Ork	30
+115	84d276ee-21ec-4171-a509-c1b88162831c	28	RegularSpell	Normal	NONE	30
+116	67f9048f-99b8-4ae4-b866-d8008d00c53d	10	WaterGoblin	Water	Goblin	31
+117	aa9999a0-734c-49c6-8f4a-651864b14e62	50	RegularSpell	Normal	NONE	31
+118	d6e9c720-9b5a-40c7-a6b2-bc34752e3463	20	Knight	Normal	Knight	31
+119	02a9c76e-b17d-427f-9240-2dd49b0d3bfd	45	RegularSpell	Normal	NONE	31
+120	2508bf5c-20d7-43b4-8c77-bc677decadef	25	FireElf	Fire	NONE	31
+121	70962948-2bf7-44a9-9ded-8c68eeac7793	9	WaterGoblin	Water	Goblin	32
+122	74635fae-8ad3-4295-9139-320ab89c2844	55	FireSpell	Fire	NONE	32
+123	ce6bcaee-47e1-4011-a49e-5a4d7d4245f3	21	Knight	Normal	Knight	32
+124	a6fde738-c65a-4b10-b400-6fef0fdb28ba	55	FireSpell	Fire	NONE	32
+125	a1618f1e-4f4c-4e09-9647-87e16f1edd2d	23	FireElf	Fire	NONE	32
+126	2272ba48-6662-404d-a9a1-41a9bed316d9	11	WaterGoblin	Water	Goblin	33
+127	3871d45b-b630-4a0d-8bc6-a5fc56b6a043	70	Dragon	Normal	Dragon	33
+128	166c1fd5-4dcb-41a8-91cb-f45dcd57cef3	22	Knight	Normal	Knight	33
+129	237dbaef-49e3-4c23-b64b-abf5c087b276	40	WaterSpell	Water	NONE	33
+130	27051a20-8580-43ff-a473-e986b52f297a	28	FireElf	Fire	NONE	33
+\.
+
+
+--
+-- TOC entry 3044 (class 0 OID 24606)
+-- Dependencies: 201
+-- Data for Name: package; Type: TABLE DATA; Schema: MonsterCardGame; Owner: postgres
+--
+
+COPY "MonsterCardGame".package (packageid, packagename, packagecost, userid) FROM stdin;
+25	package	5	31
+26	package	5	31
+27	package	5	31
+28	package	5	31
+29	package	5	31
+30	package	5	32
+31	package	5	32
+32	package	5	32
+33	package	5	32
+34	package	5	32
+\.
+
+
+--
+-- TOC entry 3050 (class 0 OID 65560)
+-- Dependencies: 207
+-- Data for Name: stats; Type: TABLE DATA; Schema: MonsterCardGame; Owner: postgres
+--
+
+COPY "MonsterCardGame".stats (scoreid, userid, elo, wins, losses, draws) FROM stdin;
+2	32	80	0	4	1
+1	31	112	4	0	2
+\.
+
+
+--
+-- TOC entry 3048 (class 0 OID 32808)
+-- Dependencies: 205
+-- Data for Name: user; Type: TABLE DATA; Schema: MonsterCardGame; Owner: postgres
+--
+
+COPY "MonsterCardGame"."user" (userid, username, password, vcoins, bio, image, firstname) FROM stdin;
+31	kienboec	1000:5c6d3ea47ab982b9946ecf4b462a640b:a861c8cc284e7e45e03fbc8100df902f54f443c7b75b9347f4870208b0f9e0a4bcf2ef1de1d636f0a464e27665ffafa5164799d2175c66d382ada156565635b9	20	default bio	empty	anonym
+33	admin	1000:a27e4e1b8a5bb062a8f638930bb974cf:b1952d8187ebe6d7191dc088167bb1715608d64afad614e0852040ba039e04f88fbfef259f42daa23b3e38d31760b670ebad4b45cd6f994b5d6dda89c1a7e52f	0	default bio	empty	anonym
+32	altenhof	1000:a72f6ce8ed11fae74192f200c213709a:ec125098745ff3c1a56bf2ba5f93759db8bc99f5c72ca95906be7cbaabf1ae990bdbc1d35d7b9dead2b0e04779cd3f9e94e5cb7e725f144f6c3161625bb2cba4	5	me codin...	:-D	Altenhofer
+\.
+
+
+--
+-- TOC entry 3068 (class 0 OID 0)
+-- Dependencies: 208
+-- Name: battlelog_battleid_seq; Type: SEQUENCE SET; Schema: MonsterCardGame; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"MonsterCardGame".battlelog_battleid_seq', 2, true);
+
+
+--
+-- TOC entry 3069 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: card_cardnumber_seq; Type: SEQUENCE SET; Schema: MonsterCardGame; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"MonsterCardGame".card_cardnumber_seq', 135, true);
+
+
+--
+-- TOC entry 3070 (class 0 OID 0)
+-- Dependencies: 200
+-- Name: package_packageid_seq; Type: SEQUENCE SET; Schema: MonsterCardGame; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"MonsterCardGame".package_packageid_seq', 34, true);
+
+
+--
+-- TOC entry 3071 (class 0 OID 0)
+-- Dependencies: 206
+-- Name: stats_scoreid_seq; Type: SEQUENCE SET; Schema: MonsterCardGame; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"MonsterCardGame".stats_scoreid_seq', 2, true);
+
+
+--
+-- TOC entry 3072 (class 0 OID 0)
+-- Dependencies: 204
+-- Name: user_userid_seq; Type: SEQUENCE SET; Schema: MonsterCardGame; Owner: postgres
+--
+
+SELECT pg_catalog.setval('"MonsterCardGame".user_userid_seq', 40, true);
+
+
+--
+-- TOC entry 2907 (class 2606 OID 73791)
+-- Name: battlelog battlelog_pkey; Type: CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".battlelog
+    ADD CONSTRAINT battlelog_pkey PRIMARY KEY (battleid);
+
+
+--
+-- TOC entry 2897 (class 2606 OID 40983)
+-- Name: card card_cardserialid_key; Type: CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".card
+    ADD CONSTRAINT card_cardserialid_key UNIQUE (cardserialid);
+
+
+--
+-- TOC entry 2899 (class 2606 OID 32800)
+-- Name: card card_pkey; Type: CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".card
+    ADD CONSTRAINT card_pkey PRIMARY KEY (cardnumber);
+
+
+--
+-- TOC entry 2895 (class 2606 OID 24613)
+-- Name: package package_pkey; Type: CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".package
+    ADD CONSTRAINT package_pkey PRIMARY KEY (packageid);
+
+
+--
+-- TOC entry 2905 (class 2606 OID 65565)
+-- Name: stats stats_pkey; Type: CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".stats
+    ADD CONSTRAINT stats_pkey PRIMARY KEY (scoreid);
+
+
+--
+-- TOC entry 2901 (class 2606 OID 32816)
+-- Name: user user_pkey; Type: CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame"."user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (userid);
+
+
+--
+-- TOC entry 2903 (class 2606 OID 32828)
+-- Name: user user_username_key; Type: CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame"."user"
+    ADD CONSTRAINT user_username_key UNIQUE (username);
+
+
+--
+-- TOC entry 2908 (class 2606 OID 32822)
+-- Name: package fk.user_id; Type: FK CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".package
+    ADD CONSTRAINT "fk.user_id" FOREIGN KEY (userid) REFERENCES "MonsterCardGame"."user"(userid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2912 (class 2606 OID 73797)
+-- Name: battlelog fk_loserid; Type: FK CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".battlelog
+    ADD CONSTRAINT fk_loserid FOREIGN KEY (winnerid) REFERENCES "MonsterCardGame"."user"(userid);
+
+
+--
+-- TOC entry 2909 (class 2606 OID 32801)
+-- Name: card fk_package; Type: FK CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".card
+    ADD CONSTRAINT fk_package FOREIGN KEY (packageid) REFERENCES "MonsterCardGame".package(packageid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2910 (class 2606 OID 65566)
+-- Name: stats fk_user; Type: FK CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".stats
+    ADD CONSTRAINT fk_user FOREIGN KEY (userid) REFERENCES "MonsterCardGame"."user"(userid) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 2911 (class 2606 OID 73792)
+-- Name: battlelog fk_winnerid; Type: FK CONSTRAINT; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER TABLE ONLY "MonsterCardGame".battlelog
+    ADD CONSTRAINT fk_winnerid FOREIGN KEY (winnerid) REFERENCES "MonsterCardGame"."user"(userid);
+
+
+--
+-- TOC entry 3058 (class 0 OID 0)
+-- Dependencies: 209
+-- Name: TABLE battlelog; Type: ACL; Schema: MonsterCardGame; Owner: postgres
+--
+
+GRANT ALL ON TABLE "MonsterCardGame".battlelog TO PUBLIC;
+
+
+--
+-- TOC entry 3060 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: TABLE card; Type: ACL; Schema: MonsterCardGame; Owner: postgres
+--
+
+GRANT ALL ON TABLE "MonsterCardGame".card TO PUBLIC;
+
+
+--
+-- TOC entry 3062 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: TABLE package; Type: ACL; Schema: MonsterCardGame; Owner: postgres
+--
+
+GRANT ALL ON TABLE "MonsterCardGame".package TO PUBLIC;
+
+
+--
+-- TOC entry 3064 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: TABLE stats; Type: ACL; Schema: MonsterCardGame; Owner: postgres
+--
+
+GRANT ALL ON TABLE "MonsterCardGame".stats TO PUBLIC;
+
+
+--
+-- TOC entry 3066 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: TABLE "user"; Type: ACL; Schema: MonsterCardGame; Owner: postgres
+--
+
+GRANT ALL ON TABLE "MonsterCardGame"."user" TO PUBLIC;
+
+
+--
+-- TOC entry 1737 (class 826 OID 16397)
+-- Name: DEFAULT PRIVILEGES FOR TABLES; Type: DEFAULT ACL; Schema: MonsterCardGame; Owner: postgres
+--
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA "MonsterCardGame" REVOKE ALL ON TABLES  FROM postgres;
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA "MonsterCardGame" GRANT ALL ON TABLES  TO PUBLIC;
+
+
+-- Completed on 2021-01-10 22:21:53
+
+--
+-- PostgreSQL database dump complete
+--
+
