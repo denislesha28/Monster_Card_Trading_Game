@@ -12,11 +12,6 @@ public class TokenGenerator {
     }
 
 
-    public void deleteToken(String input){
-        String token="Basic "+input+"-mtcgToken";
-        tokens.remove(token);
-    }
-
     public String returnUserFromToken(String input){
         int starting_pos=input.indexOf("Authorization");
         String user="";

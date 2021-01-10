@@ -48,6 +48,7 @@ public class ClientThread extends Thread {
                 if (request.compareTo("users") == 0) {
                     User user = jsonSerializer.convertUserToObject(payload);
                     dbHandler.createUser(user.getUsername(), user.getPassword());
+                    user.resetPassword();
                     out.println(handler.ServerResponse);
                     out.flush();
                 } else if (request.compareTo("sessions") == 0) {
@@ -57,6 +58,7 @@ public class ClientThread extends Thread {
                     } else {
                         System.out.println("Wrong username or password");
                     }
+                    userManager.at(position).resetPassword();
                     out.println(handler.ServerResponse);
                     out.flush();
                 } else if (request.compareTo("packages") == 0) {

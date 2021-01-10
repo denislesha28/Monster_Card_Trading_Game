@@ -1,0 +1,96 @@
+MonsterCardGame - Dokumentation
+
+Technische bemerkenswert Entscheidungen:
+Enums wurden dazu verwendet um Monster Types und Element Types zu unterscheiden 
+Grunde dafür:
+	->code wird leichter zum lesen
+	->Enums sind performanter zu vergleichen als Strings 
+
+Jackson Library dafür verwendet um JSON Syntax in JAVA-Objekten zu serialisieren
+Grunde dafür:
+	->leichte Implementierung via Maven
+	->leichte umwandlung in Java Objekt
+
+Password Hashing via PBKDF2 (mit Salt verstärkt)
+Grunde dafür:
+	->Password gesichert in Datenbank gespeichert
+
+Als Multithreading implementation wird die Java Klasse Thread verwendet
+Synchronisation via Mutexes
+	beim erstellen von Decks 
+	beim Verwaltung von eingeloggten Benutzer
+Pro Thread wird eine Datenbankverbindung aufgebaut 
+Pro Thread gibt es auch eine HTTPHandler and TokenHandler 
+Grunde dafür:
+	->unterstützte Implementation von Multithreading
+	->Synchronisations Fehler zu vermeiden
+
+Userverwaltung wird via die Klasse Usermanager gemacht 
+Eingeloggte Benutzer werden gespeichert und konnen von alle Threads zugegriffen werden
+Synchronisation via Mutexes 
+Grunde dafür:
+	->Thread safe globale Verwaltung und Zugriff von Benutzer
+
+Testing:
+CardTest -> es wird getestet ob Karten korrekt eingelegt werden(wichtiges Grundelement von Spiel)
+DatabaseHandlerTest -> es wird getestet ob die Verbindung mit Datenbank funktional ist und ob
+Grundbefehle funktionieren
+JsonSerializerTest -> es wird getestet ob Json Strings korrekt in Java Objekten umgewandelt werden 
+(wichtiges Element es muss sicher gestellt werden dass curl Befehle richtig verstanden werden)
+PasswordHashingTest -> es wird getestet ob das Password validierung mit Hash richtig funktioniert 
+(wichtiges Element weil es muss sicher gestellt werden dass kein Sicherheitslücken gibt und dass Benutzer sich korrekt einloggen können  )
+RequestContextTest -> es wird der HTTP Handler getestet (wichtiges Element weil REST mit HTTP zu übertragung von Daten verwendent wird )
+
+Time Tracking:
+2 Std Databaseconnection
+10 Std HTTPHandler
+2 Std 1st version Battle Implementation 
+1.5 Std Monster and Spell Card Design
+2 Std Json Serialiser
+1 Std Database Design
+0.5 Std Database erstellen
+1.5 Std Database Queries für den Spiel
+5 Std Test Klassen
+0.5 Std Git verwaltung
+2 Std Hashing and Validation
+0.5 Std User erstellung 
+2 Std Token Generator
+5 Std Creating Packages
+3 Std Creating Decks
+5 Std Multithreading and Synchronization
+1.5 Std Userverwaltung
+3 Std Deck Battles
+5 Std Scoreboard and User Stats
+0.5 Std User Profil
+
+
+Was man besser machen könnte:
+
+ThreadPool
+DatabaseVerbindungenPool
+
+Das wäre eine Optimale Lösung wenn das Software wirklich verkauft wurde, dass man
+am Server ein Pool von Threads und Verbindungen anbietet um die Verbindungszeiten zu verringern
+und um die Threadschedulingzeit zu verringern (weil man nicht ständig neue Threads erstellen muss )
+
+More Testing (sind aus zeitlichen Gründen nicht gegangen)
+Das Testen von Decks und kaufen von Packages ist eine wichtiges Element 
+Das Testen von Multithreaded Userverwaltung wäre auch wichtig gewesen um sicherzustellen dass eingelogge User
+korrekt behandelt werden
+Das Testen von verschieden Battle Variationen um zu überprüfen ob alle Fälle korrekt behandelt werden
+
+Multithreaded approach
+Bis zur hälfte vom Programm wurde einfach entwickelt ohne darum viel zu denken ob die Implementation
+korrekt beim Multithreading interpretiert wird. Deshalb ist dann später viel Arbeit aufgetaucht um Klassen
+zu ändern und Implementationen anzupassen dass sie von mehrere Threads korrekt intepretiert werden
+
+Besseres Timeline zu erstellen:
+Die Arbeit ist nicht so konsistent gelaufen wie ich es geplannt habe. Es gab Zeitpunkte wo viel implementiert wurde
+und Zeitpunkte wo nichts gemacht wurde. Es wäre besser den Plan auszubalancieren  
+
+
+
+
+
+
+
